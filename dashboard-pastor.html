@@ -442,14 +442,34 @@
 
             <!-- VIEW: CONTENT -->
             <section id="view-content" class="view-section" style="height: calc(100vh - 100px); display: flex; flex-direction: column;">
-                <h3 class="section-heading mb-2">Editor Visual (Modo En Vivo)</h3>
-                
-                <div style="flex: 1; min-height: 0; position: relative; border: 2px solid var(--color-primary); border-radius: 8px; overflow: hidden; background: #fff;">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; background: rgba(201, 168, 76, 0.1); border-bottom: 1px solid var(--color-primary); padding: 5px 15px; font-size: 0.8rem; color: var(--color-primary); font-family: var(--font-body); display: flex; justify-content: space-between; z-index: 10;">
-                        <span>🟢 Modo Edición Visual Activo — Pasa el mouse sobre las secciones para editarlas</span>
-                        <a href="index.html" target="_blank" style="color: var(--color-primary); text-decoration: none;">Ver página pública ↗</a>
+                <div style="background: rgba(201, 168, 76, 0.1); border: 1px solid var(--color-primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 class="section-heading mb-0" style="color: var(--color-primary); font-size: 1.5rem;">
+                            ⚠️ Editor de Página Web
+                        </h3>
+                        <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">Solo visible para el Pastor. Los cambios afectan la página pública al instante.</p>
                     </div>
-                    <iframe src="index.html?mode=edit" style="width: 100%; height: 100%; border: none; padding-top: 30px; box-sizing: border-box; background: var(--bg-main);"></iframe>
+                    <a href="index.html" target="_blank" class="btn-outline-gold">Ver página pública ↗</a>
+                </div>
+                
+                <div style="display: flex; flex: 1; min-height: 0; gap: 1.5rem;">
+                    <!-- LEFT: Sidebar Tabs -->
+                    <div style="width: 250px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column;" class="custom-scrollbar" id="cms-tabs">
+                        <button class="cms-tab active" data-section="navbar">Navbar</button>
+                        <button class="cms-tab" data-section="hero">Hero (Inicio)</button>
+                        <button class="cms-tab" data-section="horarios">Horarios</button>
+                        <button class="cms-tab" data-section="nosotros">Nosotros</button>
+                        <button class="cms-tab" data-section="eventos">Eventos</button>
+                        <button class="cms-tab" data-section="sermones">Sermones</button>
+                        <button class="cms-tab" data-section="contacto">Contacto</button>
+                        <button class="cms-tab" data-section="footer">Footer</button>
+                        <button class="cms-tab" data-section="estilos">🎨 Colores y Estilo</button>
+                    </div>
+
+                    <!-- RIGHT: Content Editor -->
+                    <div style="flex: 1; background: #111A11; border: 1px solid var(--border-color); border-radius: 8px; overflow-y: auto; padding: 2rem; position: relative;" class="custom-scrollbar" id="cms-content-area">
+                        <div class="text-center text-secondary">Cargando editor...</div>
+                    </div>
                 </div>
             </section>
 
@@ -520,5 +540,6 @@
     <script src="config.js"></script>
     <script src="dashboard-pastor.js"></script>
     <script src="dashboard-pastor-curso.js"></script>
+    <script src="dashboard-pastor-web.js"></script>
 </body>
 </html>
