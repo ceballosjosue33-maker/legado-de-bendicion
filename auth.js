@@ -116,7 +116,7 @@ document.getElementById('form-register').addEventListener('submit', async e => {
                 nombre,
                 email,
                 telefono: telefono || null,
-                rol:      'estudiante',
+                rol:      'discipulo',
                 activo:   true
             });
             if (dbErr) console.warn('Perfil no guardado en tabla usuarios:', dbErr.message);
