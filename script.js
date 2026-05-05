@@ -95,11 +95,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         .subscribe();
 });
 
+
+window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'cms_live_preview') {
+        loadPageContent(event.data.payload);
+    }
+});
+
 // ── CONTENT CMS ──────────────────────────
 // ── CONTENT CMS (Avanzado) ──────────────────────────
-async function loadPageContent() {
-    const { data, error } = await _s.from('contenido_pagina').select('*');
-    if (error || !data || data.length === 0) return; // Usa defaults del HTML
+async function loadPageContent(dataOverride) {
+    let data = dataOverride;
+    if (!data) {
+        const { data: dbData, error } = await _s.from('contenido_pagina').select('*');
+        if (error || !dbData || dbData.length === 0) return;
+        data = dbData;
+    }
 
     const cms = {};
     data.forEach(row => { cms[`${row.seccion}_${row.campo}`] = row; });

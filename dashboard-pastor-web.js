@@ -194,13 +194,14 @@ function renderCMSForm(section) {
     }
 
     // Set change listener for unsaved warning
-    document.getElementById('cms-form').addEventListener('input', () => hasUnsavedCmsChanges = true);
+    document.getElementById('cms-form').addEventListener('input', () => { hasUnsavedCmsChanges = true; sendLivePreview(); });
     
     // File uploads logic
     setupDragAndDrop(section);
 
     // Dynamic Lists logic
     setupJSONLists(section);
+    sendLivePreview();
 
     // Submit logic
     document.getElementById('cms-form').addEventListener('submit', handleCMSSubmit);
@@ -289,6 +290,9 @@ function setupDragAndDrop(section) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     preview.innerHTML = `<img src="${e.target.result}"> <p class="text-gold text-micro mt-1">Pendiente por guardar...</p>`;
+                    const urlInput = zone.querySelector('.cms-image-url-input');
+                    if (urlInput) urlInput.value = e.target.result; // Use base64 for live preview
+                    sendLivePreview();
                 }
                 reader.readAsDataURL(fileInput.files[0]);
                 hasUnsavedCmsChanges = true;
@@ -327,8 +331,7 @@ function setupJSONLists(section) {
                 template.forEach(t => {
                     document.getElementById(`item_${campo}_${idx}_${t.key}`).addEventListener('input', (e) => {
                         items[idx][t.key] = e.target.value;
-                        hiddenInput.value = JSON.stringify(items);
-                        hasUnsavedCmsChanges = true;
+                        hiddenInput.value = JSON.stringify(items); hasUnsavedCmsChanges = true; sendLivePreview();
                     });
                 });
             });
@@ -338,15 +341,13 @@ function setupJSONLists(section) {
         window.removeJSONItem = (c, i) => {
             if(c !== campo) return;
             items.splice(i, 1);
-            hiddenInput.value = JSON.stringify(items);
-            hasUnsavedCmsChanges = true;
+            hiddenInput.value = JSON.stringify(items); hasUnsavedCmsChanges = true; sendLivePreview();
             renderItems();
         };
 
         btnAdd.addEventListener('click', () => {
             items.push({});
-            hiddenInput.value = JSON.stringify(items);
-            hasUnsavedCmsChanges = true;
+            hiddenInput.value = JSON.stringify(items); hasUnsavedCmsChanges = true; sendLivePreview();
             renderItems();
         });
 
@@ -431,4 +432,44 @@ async function handleCMSSubmit(e) {
         btn.disabled = false;
         btn.textContent = '💾 Guardar Cambios';
     }
+}
+
+function sendLivePreview() {
+    const iframe = document.getElementById('cms-preview-iframe');
+    if (!iframe || !iframe.contentWindow) return;
+
+    // Collect current form payloads
+    const currentSection = currentCmsSection;
+    const form = document.getElementById('cms-form');
+    if (!form) return;
+
+    const payloads = [];
+    form.querySelectorAll('.cms-value-input').forEach(input => {
+        const campo = input.getAttribute('data-campo');
+        const isCheckbox = input.type === 'checkbox';
+        const val = isCheckbox ? (input.checked ? 'true' : 'false') : input.value;
+        payloads.push({ seccion: currentSection, campo: campo, valor_texto: val });
+    });
+    form.querySelectorAll('.cms-image-url-input').forEach(input => {
+        const campo = input.getAttribute('data-campo');
+        let p = payloads.find(x => x.campo === campo);
+        if(p) p.valor_imagen_url = input.value;
+        else payloads.push({ seccion: currentSection, campo: campo, valor_imagen_url: input.value });
+    });
+
+    // Merge with existing cmsData (convert cmsData object to array)
+    const allData = Object.values(cmsData).map(row => {
+        // If this row belongs to the current section being edited, we skip it here and use the payload instead
+        const p = payloads.find(x => x.seccion === row.seccion && x.campo === row.campo);
+        if (p) return null;
+        return row;
+    }).filter(Boolean);
+
+    // Concatenate allData with current payloads
+    const mergedData = allData.concat(payloads);
+
+    iframe.contentWindow.postMessage({
+        type: 'cms_live_preview',
+        payload: mergedData
+    }, '*');
 }
