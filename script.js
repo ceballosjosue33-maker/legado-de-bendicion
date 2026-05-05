@@ -110,6 +110,15 @@ async function loadPageContent() {
                 const heroDesc = document.querySelector('.hero-content .description');
                 if (heroDesc) heroDesc.textContent = row.subtitulo;
             }
+            if (row.imagen_url) {
+                const heroEl = document.querySelector('.hero');
+                if (heroEl) {
+                    heroEl.style.backgroundImage = `url('${row.imagen_url}')`;
+                    heroEl.style.backgroundSize = 'cover';
+                    heroEl.style.backgroundPosition = 'center';
+                    heroEl.style.backgroundAttachment = 'fixed';
+                }
+            }
         }
         if (row.seccion === 'nosotros') {
             if (row.titulo) {
@@ -243,6 +252,7 @@ window.openEditModal = function(s, el) {
         }
     }
     const textVal = s.textSel ? (el.querySelector(s.textSel)?.textContent.trim() || '') : '';
+    const supportsImage = (s.key === 'hero' || s.key === 'nosotros');
 
     let html = `
         <div class="modal-edit-overlay" id="edit-modal">
@@ -258,6 +268,9 @@ window.openEditModal = function(s, el) {
     if(s.textSel) {
         html += `<label>Texto Principal</label><textarea id="edit-text" rows="4">${textVal}</textarea>`;
     }
+    if(supportsImage) {
+        html += `<label>Cambiar Imagen de Fondo/Sección (Opcional)</label><input type="file" id="edit-img" accept="image/*" style="padding: 5px; cursor: pointer;">`;
+    }
 
     html += `
                 <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:10px;">
@@ -270,14 +283,31 @@ window.openEditModal = function(s, el) {
     document.body.insertAdjacentHTML('beforeend', html);
 
     document.getElementById('btn-save-edit').onclick = async function() {
-        this.textContent = 'Guardando...';
+        this.textContent = 'Subiendo y Guardando...';
         this.disabled = true;
+
+        let imagen_url = null;
+        if (supportsImage) {
+            const imgFile = document.getElementById('edit-img').files[0];
+            if (imgFile) {
+                const path = `${s.key}/${Date.now()}_${imgFile.name}`;
+                const { error: upErr } = await _s.storage.from('imagenes-pagina').upload(path, imgFile, { upsert: true });
+                if (!upErr) {
+                    const { data: { publicUrl } } = _s.storage.from('imagenes-pagina').getPublicUrl(path);
+                    imagen_url = publicUrl;
+                } else {
+                    alert('Error subiendo imagen: ' + upErr.message);
+                }
+            }
+        }
+
         const payload = { 
             seccion: s.key,
             titulo: document.getElementById('edit-title').value.trim()
         };
         if(s.subSel) payload.subtitulo = document.getElementById('edit-sub').value.trim();
         if(s.textSel) payload.texto = document.getElementById('edit-text').value.trim();
+        if(imagen_url) payload.imagen_url = imagen_url;
 
         const { data: { session } } = await _s.auth.getSession();
         payload.actualizado_por = session.user.id;
