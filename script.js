@@ -77,13 +77,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // Desbloquear secciones protegidas
+        // Lógica de visibilidad por roles
+        if (u && (u.rol === 'pastor' || u.rol === 'estudiante' || u.rol === 'lider')) {
+            unlockSection('curso-biblico');
+            document.querySelectorAll('.nav-item-curso').forEach(el => el.style.display = 'block');
+        } else {
+            const cb = document.getElementById('curso-biblico');
+            if(cb) cb.style.display = 'none';
+            document.querySelectorAll('.nav-item-curso').forEach(el => el.style.display = 'none');
+        }
+
+        // Sermones siguen desbloqueándose para cualquier usuario logueado
         unlockSection('sermones');
-        unlockSection('curso-biblico');
     } else {
-        // Bloquear secciones de contenido premium
+        // Bloquear secciones de contenido premium si no hay sesión
         lockSection('sermones');
-        lockSection('curso-biblico');
+        const cb = document.getElementById('curso-biblico');
+        if(cb) cb.style.display = 'none';
+        document.querySelectorAll('.nav-item-curso').forEach(el => el.style.display = 'none');
     }
 
     // ── 6. ACTUALIZACIONES EN TIEMPO REAL ────
