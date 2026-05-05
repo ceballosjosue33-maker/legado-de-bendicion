@@ -125,6 +125,26 @@ async function loadPageContent() {
                 if (img) img.src = row.imagen_url;
             }
         }
+        if (row.seccion === 'horarios') {
+            if (row.titulo) {
+                const h = document.querySelector('#horarios .section-title');
+                if (h) h.textContent = row.titulo;
+            }
+            if (row.subtitulo) {
+                const p = document.querySelector('#horarios .section-subtitle');
+                if (p) p.textContent = row.subtitulo;
+            }
+        }
+        if (row.seccion === 'eventos') {
+            if (row.titulo) {
+                const h = document.querySelector('#eventos .section-title');
+                if (h) h.textContent = row.titulo;
+            }
+            if (row.subtitulo) {
+                const p = document.querySelector('#eventos .section-subtitle');
+                if (p) p.textContent = row.subtitulo;
+            }
+        }
     });
 }
 

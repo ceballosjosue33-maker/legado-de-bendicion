@@ -369,6 +369,14 @@ function setupContentForms() {
                 if (document.getElementById('nosotros-text')) document.getElementById('nosotros-text').value = row.texto || '';
                 if (document.getElementById('nosotros-mision')) document.getElementById('nosotros-mision').value = row.subtitulo || '';
             }
+            if (row.seccion === 'horarios') {
+                if (document.getElementById('horarios-title')) document.getElementById('horarios-title').value = row.titulo || '';
+                if (document.getElementById('horarios-subtitle')) document.getElementById('horarios-subtitle').value = row.subtitulo || '';
+            }
+            if (row.seccion === 'eventos') {
+                if (document.getElementById('eventos-title')) document.getElementById('eventos-title').value = row.titulo || '';
+                if (document.getElementById('eventos-subtitle')) document.getElementById('eventos-subtitle').value = row.subtitulo || '';
+            }
         });
     });
 
@@ -399,6 +407,18 @@ function setupContentForms() {
         e.preventDefault();
         const btn = e.submitter; const t = btn.textContent;
         await saveSection('nosotros', { titulo: document.getElementById('nosotros-title').value, texto: document.getElementById('nosotros-text').value, subtitulo: document.getElementById('nosotros-mision').value }, btn, t);
+    });
+
+    document.getElementById('form-horarios')?.addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = e.submitter; const t = btn.textContent;
+        await saveSection('horarios', { titulo: document.getElementById('horarios-title').value, subtitulo: document.getElementById('horarios-subtitle').value }, btn, t);
+    });
+
+    document.getElementById('form-eventos')?.addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = e.submitter; const t = btn.textContent;
+        await saveSection('eventos', { titulo: document.getElementById('eventos-title').value, subtitulo: document.getElementById('eventos-subtitle').value }, btn, t);
     });
 }
 
