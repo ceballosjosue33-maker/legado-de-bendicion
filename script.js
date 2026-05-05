@@ -197,9 +197,14 @@ function enableEditMode() {
             background: #C9A84C; color: #0A0F0A; padding: 6px 14px;
             font-size: 0.85rem; font-family: 'Outfit', sans-serif; font-weight: 600;
             border-radius: 4px; cursor: pointer; z-index: 100;
-            display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: none;
+            display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: none;
+            animation: pulse 2s infinite;
         }
-        .editable-section:hover .btn-edit-overlay { display: block; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 4px 15px rgba(201,168,76,0.6); }
+            100% { transform: scale(1); }
+        }
         .modal-edit-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10,15,10,0.9); z-index: 99999;
