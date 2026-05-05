@@ -71,6 +71,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await _s.auth.signOut();
                 window.location.reload();
             });
+
+            if (u.rol === 'pastor' && new URLSearchParams(window.location.search).get('mode') === 'edit') {
+                enableEditMode();
+            }
         }
 
         // Desbloquear secciones protegidas
@@ -171,4 +175,116 @@ function unlockSection(sectionId) {
     // En este flujo, el HTML base siempre tiene el contenido; lockSection lo reemplaza solo si no hay sesión.
     const section = document.getElementById(sectionId);
     if (section) section.style.display = '';
+}
+
+// ── VISUAL EDIT MODE ─────────────────────
+function enableEditMode() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .editable-section { position: relative; border: 2px dashed rgba(201,168,76,0.3) !important; transition: border 0.3s; margin: 5px; border-radius: 8px; }
+        .editable-section:hover { border-color: #C9A84C !important; background: rgba(201,168,76,0.02); }
+        .btn-edit-overlay {
+            position: absolute; top: 15px; right: 15px;
+            background: #C9A84C; color: #0A0F0A; padding: 6px 14px;
+            font-size: 0.85rem; font-family: 'Outfit', sans-serif; font-weight: 600;
+            border-radius: 4px; cursor: pointer; z-index: 100;
+            display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: none;
+        }
+        .editable-section:hover .btn-edit-overlay { display: block; }
+        .modal-edit-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10,15,10,0.9); z-index: 99999;
+            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .modal-edit-box {
+            background: #111A11; border: 1px solid #C9A84C; border-radius: 12px;
+            padding: 2rem; width: 450px; max-width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .modal-edit-box label { display: block; color: #C9A84C; margin-bottom: 8px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;}
+        .modal-edit-box input, .modal-edit-box textarea { 
+            width: 100%; padding: 10px; margin-bottom: 1.5rem; background: rgba(0,0,0,0.4); 
+            border: 1px solid rgba(201,168,76,0.3); color: #F5F0E8; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; box-sizing: border-box;
+        }
+        .modal-edit-box input:focus, .modal-edit-box textarea:focus { outline: none; border-color: #C9A84C; }
+    `;
+    document.head.appendChild(style);
+
+    const sections = [
+        { id: 'inicio', key: 'hero', titleSel: '.title', subSel: '.description' },
+        { id: 'nosotros', key: 'nosotros', titleSel: '.section-title', subSel: '.history-quote:first-of-type', textSel: '.history-desc' },
+        { id: 'horarios', key: 'horarios', titleSel: '.section-title', subSel: '.section-subtitle' },
+        { id: 'eventos', key: 'eventos', titleSel: '.section-title', subSel: '.section-subtitle' }
+    ];
+
+    setTimeout(() => {
+        sections.forEach(s => {
+            const el = document.getElementById(s.id);
+            if(!el) return;
+            el.classList.add('editable-section');
+            const btn = document.createElement('button');
+            btn.className = 'btn-edit-overlay';
+            btn.innerHTML = '✏️ Editar Sección';
+            btn.onclick = () => openEditModal(s, el);
+            el.appendChild(btn);
+        });
+    }, 500);
+}
+
+window.openEditModal = function(s, el) {
+    const titleVal = el.querySelector(s.titleSel)?.textContent.trim() || '';
+    
+    let subVal = '';
+    if (s.subSel) {
+        if (s.key === 'nosotros') {
+             const m = el.querySelector(s.subSel);
+             subVal = m ? m.childNodes[m.childNodes.length - 1].textContent.trim() : '';
+        } else {
+             subVal = el.querySelector(s.subSel)?.textContent.trim() || '';
+        }
+    }
+    const textVal = s.textSel ? (el.querySelector(s.textSel)?.textContent.trim() || '') : '';
+
+    let html = `
+        <div class="modal-edit-overlay" id="edit-modal">
+            <div class="modal-edit-box">
+                <h3 style="color:#F5F0E8;margin-top:0;margin-bottom:1.5rem;font-family:'Cormorant Garamond', serif;font-size:1.8rem;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:10px;">Editar ${s.key.toUpperCase()}</h3>
+                <label>Título Principal</label>
+                <input type="text" id="edit-title" value="${titleVal.replace(/"/g, '&quot;')}">
+    `;
+    
+    if(s.subSel) {
+        html += `<label>Subtítulo / Misión</label><textarea id="edit-sub" rows="2">${subVal}</textarea>`;
+    }
+    if(s.textSel) {
+        html += `<label>Texto Principal</label><textarea id="edit-text" rows="4">${textVal}</textarea>`;
+    }
+
+    html += `
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:10px;">
+                    <button onclick="document.getElementById('edit-modal').remove()" style="padding:10px 20px;background:transparent;color:#8A9E8A;border:1px solid #8A9E8A;border-radius:4px;cursor:pointer;font-family:'Outfit',sans-serif;">Cancelar</button>
+                    <button id="btn-save-edit" style="padding:10px 20px;background:#C9A84C;color:#0A0F0A;border:none;border-radius:4px;cursor:pointer;font-weight:600;font-family:'Outfit',sans-serif;">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
+
+    document.getElementById('btn-save-edit').onclick = async function() {
+        this.textContent = 'Guardando...';
+        this.disabled = true;
+        const payload = { 
+            seccion: s.key,
+            titulo: document.getElementById('edit-title').value.trim()
+        };
+        if(s.subSel) payload.subtitulo = document.getElementById('edit-sub').value.trim();
+        if(s.textSel) payload.texto = document.getElementById('edit-text').value.trim();
+
+        const { data: { session } } = await _s.auth.getSession();
+        payload.actualizado_por = session.user.id;
+        payload.updated_at = new Date().toISOString();
+
+        const { error } = await _s.from('contenido_pagina').upsert(payload, { onConflict: 'seccion' });
+        if(error) alert('Error: ' + error.message);
+        else document.getElementById('edit-modal').remove();
+    };
 }
