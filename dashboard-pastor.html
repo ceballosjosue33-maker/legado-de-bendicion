@@ -244,10 +244,13 @@
             </section>
 
             <!-- VIEW: CONTENT -->
-            <section id="view-content" class="view-section">
-                <h3 class="section-heading mb-2">Editor de Contenido Web</h3>
+            <section id="view-content" class="view-section" style="height: calc(100vh - 100px); display: flex; flex-direction: column;">
+                <h3 class="section-heading mb-2">Editor de Contenido Web y Vista Previa</h3>
                 
-                <!-- Seccion Hero -->
+                <div style="display: grid; grid-template-columns: 350px 1fr; gap: 1.5rem; flex: 1; min-height: 0;">
+                    <!-- Left: Editor Forms -->
+                    <div style="overflow-y: auto; padding-right: 10px;" class="custom-scrollbar">
+                        <!-- Seccion Hero -->
                 <div class="content-form-card">
                     <h4>Sección Hero</h4>
                     <form class="content-form" id="form-hero">
@@ -321,7 +324,18 @@
                         <button type="submit" class="btn-primary">Guardar Eventos</button>
                     </form>
                 </div>
-            </section>
+            </div>
+            
+            <!-- Right: Live Preview -->
+            <div style="border: 1px solid var(--color-primary); border-radius: 8px; overflow: hidden; background: #fff; position: relative;">
+                <div style="position: absolute; top: 0; left: 0; right: 0; background: rgba(201, 168, 76, 0.1); border-bottom: 1px solid var(--color-primary); padding: 5px 15px; font-size: 0.8rem; color: var(--color-primary); font-family: var(--font-body); display: flex; justify-content: space-between;">
+                    <span>🟢 Vista previa en vivo (se actualiza sola al guardar)</span>
+                    <a href="index.html" target="_blank" style="color: var(--color-primary); text-decoration: none;">Abrir pestaña nueva ↗</a>
+                </div>
+                <iframe src="index.html" style="width: 100%; height: calc(100% - 30px); border: none; margin-top: 30px;"></iframe>
+            </div>
+        </div>
+    </section>
 
         </main>
     </div>
