@@ -81,6 +81,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         lockSection('sermones');
         lockSection('curso-biblico');
     }
+
+    // ── 6. ACTUALIZACIONES EN TIEMPO REAL ────
+    _s.channel('public-content')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'contenido_pagina' }, payload => {
+            console.log('Cambio detectado en la web, actualizando en tiempo real...');
+            loadPageContent();
+        })
+        .subscribe();
 });
 
 // ── CONTENT CMS ──────────────────────────
