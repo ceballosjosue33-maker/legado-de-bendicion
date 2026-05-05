@@ -132,14 +132,45 @@ async function buildCharts() {
         options: { responsive: true, maintainAspectRatio: false }
     });
 
-    // 3. Dona roles
-    const rc = { pastor: 0, lider: 0, discipulo: 0, estudiante: 0 };
-    allUsers.forEach(u => { if (rc[u.rol] !== undefined) rc[u.rol]++; });
+    // 3. Dona roles (Porcentajes)
+    const rc = { lider: 0, discipulo: 0, nuevo: 0 };
+    allUsers.forEach(u => { 
+        if (u.rol === 'pastor' || u.rol === 'lider') rc.lider++;
+        else if (u.rol === 'discipulo') rc.discipulo++;
+        else rc.nuevo++;
+    });
+    const totalRoles = allUsers.length || 1;
+    const dataRoles = [
+        Math.round((rc.lider / totalRoles) * 100),
+        Math.round((rc.discipulo / totalRoles) * 100),
+        Math.round((rc.nuevo / totalRoles) * 100)
+    ];
+
     if (charts.roles) charts.roles.destroy();
     charts.roles = new Chart(document.getElementById('chartRoles'), {
-        type: 'doughnut',
-        data: { labels: ['Pastor', 'Líderes', 'Discípulos', 'Estudiantes'], datasets: [{ data: Object.values(rc), backgroundColor: [gold, greenL, '#1A3A1A', '#8A9E8A'], borderColor: dark, borderWidth: 2 }] },
-        options: { responsive: true, maintainAspectRatio: false }
+        type: 'pie', // Grafica redonda clásica
+        data: { 
+            labels: ['Líderes', 'Discípulos', 'Gente Nueva'], 
+            datasets: [{ 
+                data: dataRoles, 
+                backgroundColor: [gold, greenL, '#8A9E8A'], 
+                borderColor: dark, 
+                borderWidth: 2 
+            }] 
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return ' ' + context.label + ': ' + context.raw + '%';
+                        }
+                    }
+                }
+            }
+        }
     });
 
     // 4. Top 5 líderes horizontal
