@@ -128,25 +128,60 @@
             border-bottom: 1px solid rgba(201, 168, 76, 0.1);
         }
 
+        /* =========================================
+           Navigation Bar
+           ========================================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(13, 26, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+            transition: var(--transition-smooth);
+        }
+
         .nav-container {
-            width: 90%;
-            max-width: var(--max-width);
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 1.5rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            min-width: 44px;
+            flex-shrink: 0;
+        }
+
+        .logo-img {
+            height: 44px;
+            width: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            color: var(--text-primary);
             font-family: var(--font-heading);
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--color-primary);
-            letter-spacing: 1px;
+            font-size: 1.3rem;
+            font-weight: 500;
         }
 
         .nav-links {
             display: flex;
+            align-items: center;
+            list-style: none;
             gap: 2rem;
         }
 
@@ -154,18 +189,6 @@
             color: var(--text-secondary);
             font-size: 0.95rem;
             font-weight: 400;
-            position: relative;
-            padding: 0.5rem 0;
-        }
-
-        .nav-links li a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0%;
-            height: 1px;
-            background-color: var(--color-primary);
             transition: var(--transition-smooth);
         }
 
@@ -174,62 +197,86 @@
             color: var(--color-primary);
         }
 
-        .nav-links li a:hover::after,
-        .nav-links li a.active::after {
-            width: 100%;
+        .nav-auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
-        .btn-cta {
-            display: inline-block;
-            padding: 0.6rem 1.5rem;
-            border: 1px solid var(--color-primary);
-            color: var(--color-primary);
-            font-family: var(--font-body);
-            font-weight: 500;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 8px;
-            background: transparent;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .btn-cta::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 100%;
-            background-color: var(--color-primary);
-            z-index: -1;
-            transition: var(--transition-smooth);
-        }
-
-        .btn-cta:hover {
-            color: var(--bg-main);
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(201, 168, 76, 0.2);
-        }
-
-        .btn-cta:active {
-            transform: translateY(-1px) scale(0.98);
-        }
-
+        /* Mobile Menu Button */
         .mobile-menu-btn {
             display: none;
-            flex-direction: column;
-            gap: 5px;
+            width: 48px;
+            height: 48px;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            color: var(--color-primary);
+            background: transparent;
+            border: none;
+            padding: 0;
+            z-index: 1001;
         }
 
-        .mobile-menu-btn span {
-            width: 25px;
-            height: 2px;
+        .mobile-menu-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Mobile Dropdown Panel */
+        .mobile-menu-panel {
+            position: fixed;
+            top: 70px; /* Right below navbar */
+            left: 0;
+            width: 100%;
+            background-color: rgba(26, 58, 42, 0.97);
+            padding: 2rem;
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 999;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-panel.active {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-menu-panel .btn-mobile-full {
+            width: 100%;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn-mobile-primary {
             background-color: var(--color-primary);
-            transition: var(--transition-smooth);
+            color: var(--bg-main);
+        }
+
+        .btn-mobile-outline {
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            background: transparent;
+        }
+
+        /* Responsive Navbar Hide Brand Text */
+        @media (max-width: 768px) {
+            .logo-text { display: none; }
+            .nav-links, .nav-auth-buttons { display: none; }
+            .mobile-menu-btn { display: flex; }
         }
 
         /* =========================================
@@ -237,40 +284,67 @@
    ========================================= */
         .hero {
             position: relative;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            background-color: var(--bg-main);
             overflow: hidden;
+            background-color: var(--bg-main);
         }
 
-        .hero-bg-cross {
+        .hero-bg {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-image:
-                linear-gradient(to right, transparent 49.8%, rgba(201, 168, 76, 0.03) 49.8%, rgba(201, 168, 76, 0.03) 50.2%, transparent 50.2%),
-                linear-gradient(to bottom, transparent 35%, rgba(201, 168, 76, 0.03) 35%, rgba(201, 168, 76, 0.03) 35.4%, transparent 35.4%);
-            z-index: 0;
-            pointer-events: none;
+            z-index: 1;
         }
 
-        .hero-glow {
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.3;
+        }
+
+        .hero-overlay {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80vw;
-            height: 80vw;
-            background: radial-gradient(circle, rgba(253, 249, 243, 0.1) 0%, rgba(201, 168, 76, 0.05) 30%, rgba(10, 15, 10, 0) 70%);
-            border-radius: 50%;
-            z-index: 0;
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(10, 15, 10, 0.5), rgba(10, 15, 10, 0.8));
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero-content .title {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-content .description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
         }
 
         .hero-bg-logo {
@@ -310,17 +384,6 @@
             font-weight: 400;
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            padding: 0 20px;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1.5s ease forwards;
-            animation-delay: 0.2s;
-        }
-
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -338,7 +401,7 @@
         }
 
         .hero-content .title {
-            font-size: 4.5rem;
+            font-size: 6.5rem;
             color: var(--text-primary);
             margin-bottom: 1.5rem;
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
@@ -351,12 +414,6 @@
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
         }
 
         .btn-primary,
@@ -686,65 +743,168 @@
             background: linear-gradient(135deg, var(--color-medium-green), var(--color-dark-green));
         }
 
+        /* Events Section - Sacred Editorial Redesign */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .event-card {
+            background-color: #0A140A;
+            border: 1px solid rgba(201, 168, 76, 0.1);
+            border-radius: 0; /* Square corners for a more architectural/sacred feel */
+            overflow: hidden;
+            text-align: left;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 5;
+        }
+
+        .event-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--color-primary);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .event-card:hover::before {
+            opacity: 1;
+        }
+
+        .event-image-wrapper {
+            position: relative;
+            height: 280px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .event-card .event-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .event-card:hover .event-img {
+            transform: scale(1.1);
+        }
+
         .event-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 31, 15, 0.3);
-            /* verde overlay */
+            background: linear-gradient(to bottom, transparent 60%, rgba(10, 20, 10, 0.8));
             z-index: 1;
         }
 
         .event-date {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            left: 20px;
             background-color: var(--bg-main);
             color: var(--color-primary);
-            padding: 0.5rem 1rem;
+            padding: 1rem;
+            min-width: 70px;
             text-align: center;
-            border: 1px solid rgba(201, 168, 76, 0.3);
-            border-radius: 2px;
+            border: 1px solid var(--color-primary);
             z-index: 2;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: all 0.4s ease;
+        }
+
+        .event-card:hover .event-date {
+            background-color: var(--color-primary);
+            color: var(--bg-main);
+            transform: scale(1.05);
         }
 
         .event-date .day {
             display: block;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 600;
             line-height: 1;
             font-family: var(--font-heading);
+            letter-spacing: 1px;
         }
 
         .event-date .month {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 3px;
+            margin-top: 5px;
         }
 
         .event-content {
-            padding: 2rem;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
         .event-title {
             color: var(--text-primary);
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             margin-bottom: 1rem;
             font-family: var(--font-heading);
+            letter-spacing: 0.5px;
+            line-height: 1.2;
         }
 
         .event-desc {
             color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.7;
+            font-weight: 300;
+            flex: 1;
+        }
+
+        .event-btn {
+            font-family: var(--font-heading);
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .event-btn::after {
+            content: '→';
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .event-btn:hover {
+            color: var(--color-primary-hover);
+        }
+
+        .event-btn:hover::after {
+            transform: translateX(8px);
         }
 
         .events-action {
-            margin-top: 3rem;
+            margin-top: 5rem;
         }
 
         /* Sermons Section */
@@ -1444,9 +1604,107 @@
             stroke-width: 1.5px;
         }
 
-        .social-icons-footer .social-icon:hover {
-            color: var(--color-primary-hover);
-            transform: translateY(-3px) scale(1.1);
+        /* Social Media Section - Senior UI/UX Redesign */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2.5rem;
+            align-items: stretch;
+            margin-top: 4rem;
+        }
+
+        .social-card {
+            background-color: #121812; /* Graphite green/dark */
+            border: 1px solid rgba(201, 168, 76, 0.15);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--color-primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .social-card iframe {
+            border-radius: 12px;
+            flex: 1;
+            min-height: 400px;
+            background-color: #0A0F0A;
+        }
+
+        .social-card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            gap: 1.5rem;
+        }
+
+        .social-card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .social-card-header h3 {
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .social-card-header p {
+            color: rgba(245, 240, 232, 0.7); /* Off-white */
+            font-family: var(--font-body);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .social-video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .social-video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            min-height: auto;
+        }
+
+        .social-card-footer {
+            margin-top: auto;
+        }
+
+        .btn-social-visit {
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: 12px;
+            background-color: var(--color-primary);
+            color: var(--bg-main);
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-social-visit:hover {
+            background-color: var(--color-primary-hover);
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(201, 168, 76, 0.3);
         }
 
         .footer-bottom-new {
@@ -1522,92 +1780,168 @@
             color: var(--text-on-beige);
         }
 
-        @media (max-width: 768px) {
-            .mobile-only {
-                display: flex !important;
+        /* =========================================
+           RESPONSIVE DESIGN - Senior Mobile-First
+           ========================================= */
+
+        /* Fluid Typography and Spacing */
+        :root {
+            --section-padding: clamp(4rem, 8vw, 8rem);
+            --h1-size: clamp(2.5rem, 10vw, 6.5rem);
+            --h2-size: clamp(2rem, 6vw, 3.5rem);
+            --h3-size: clamp(1.5rem, 4vw, 2.2rem);
+            --body-size: clamp(1rem, 2vw, 1.15rem);
+        }
+
+        .section {
+            padding: var(--section-padding) 0;
+        }
+
+        .hero-content .title {
+            font-size: var(--h1-size);
+        }
+
+        .section-title {
+            font-size: var(--h2-size);
+        }
+
+        .hero-content .description {
+            font-size: var(--body-size);
+            max-width: 90%;
+        }
+
+        /* Tablets and Smaller Screens */
+        @media (max-width: 992px) {
+            .events-grid, 
+            .sermons-grid, 
+            .resources-grid,
+            .social-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
             }
-            .mobile-menu-btn {
-                display: flex;
+        }
+
+        /* Mobile Standard (768px) */
+        @media (max-width: 768px) {
+            .hero-content .title {
+                margin-bottom: 2rem;
             }
 
+            .hero-actions {
+                flex-direction: column;
+                gap: 1.2rem;
+                width: 100%;
+                max-width: 320px;
+                margin: 0 auto;
+            }
+
+            .hero-actions a {
+                width: 100%;
+                min-height: 52px; /* Premium Touch Target */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 2rem;
+            }
+
+            .events-grid, 
+            .sermons-grid, 
+            .resources-grid,
+            .social-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .history-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .history-image-wrapper {
+                height: 350px;
+            }
+
+            .event-btn, .btn-social-visit {
+                width: 100%;
+                min-height: 48px;
+                justify-content: center;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            /* Navigation */
             .nav-links {
                 position: fixed;
                 top: 0;
                 right: -100%;
                 height: 100vh;
-                width: 85%;
-                max-width: 400px;
+                width: 80%;
+                max-width: 350px;
                 background-color: var(--bg-main);
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                transition: var(--transition-smooth);
+                transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+                z-index: 1000;
+                padding: 3rem;
                 border-left: 1px solid rgba(201, 168, 76, 0.2);
-                gap: 2.5rem;
-                padding: 2rem;
             }
 
             .nav-links.active {
                 right: 0;
+                box-shadow: -20px 0 50px rgba(0,0,0,0.5);
             }
 
-            .nav-auth-buttons {
-                display: none; /* We will add them to nav-links for mobile */
-            }
-
-            .hero-content .title {
-                font-size: 2.5rem;
-                line-height: 1.1;
-            }
-
-            .hero-content .description {
-                font-size: 1rem;
-                padding: 0 10px;
-            }
-
-            .hero-actions {
+            .mobile-only {
+                display: flex !important;
                 flex-direction: column;
                 width: 100%;
-                max-width: 280px;
-                margin: 0 auto;
                 gap: 1rem;
             }
 
-            .hero-actions .btn-primary,
-            .hero-actions .btn-secondary,
-            .hero-actions .btn-primary-solid,
-            .hero-actions .btn-outline-gold {
-                width: 100%;
-                padding: 1rem 1.5rem;
-                font-size: 0.9rem;
+            .nav-auth-buttons {
+                display: none;
+            }
+        }
+
+        /* Small Phones (480px) */
+        @media (max-width: 480px) {
+            .hero-content .title {
+                font-size: 2.8rem;
             }
 
-            .metrics-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
+            .section-title {
+                font-size: 2.2rem;
             }
 
-            .events-grid,
-            .sermons-grid,
-            .resources-grid {
-                grid-template-columns: 1fr;
+            .event-card .event-image-wrapper {
+                height: 220px;
+            }
+
+            .event-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .event-title {
+                font-size: 1.6rem;
+            }
+
+            .history-desc {
+                font-size: 1.05rem;
+                text-align: left;
             }
 
             .footer-grid-new {
                 grid-template-columns: 1fr;
                 text-align: center;
+                gap: 3rem;
             }
 
-            .btn-primary, .btn-secondary, .btn-primary-solid, .btn-outline-gold, .btn-cta, .btn-full, .pill {
-                min-height: 48px;
-            }
-
-            .section {
-                padding: 4rem 0;
-            }
-
-            .section-title {
-                font-size: 2.2rem;
+            .social-icons-footer {
+                justify-content: center;
             }
         }
         #curso-biblico, .nav-item-curso {
@@ -1621,9 +1955,9 @@
     <!-- Navigation Bar -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <a href="#" class="logo" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
-                <img data-editable-img="navbar-logo" src="https://scontent.fclo1-4.fna.fbcdn.net/v/t39.30808-6/486432710_931766482503686_3903717456267471297_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=90jPxAqwdXoQ7kNvwH3M0Yr&_nc_oc=AdpAVk7ivquIhFz0g65Uz437PJ6YuyjFIb4TlWmJ76EqiXmDBvWhXVsrAHziTcvqgfgJJdi3ABabnclm-kPJCG5m&_nc_zt=23&_nc_ht=scontent.fclo1-4.fna&_nc_gid=GwZoJS7PzoGJtfoCLfV56Q&_nc_ss=7b2a8&oh=00_Af6HrvQGFpD6yeTzozSFHAG_uJnekNPrcmu2fPBgcjljaw&oe=69FF3CB6" alt="LDB Logo" style="height: 42px; width: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-primary);">
-                <span data-editable="navbar-nombre">Legado de Bendición</span>
+            <a href="#" class="logo">
+                <img data-editable-img="navbar-logo" src="https://scontent.fclo1-4.fna.fbcdn.net/v/t39.30808-6/486432710_931766482503686_3903717456267471297_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=90jPxAqwdXoQ7kNvwH3M0Yr&_nc_oc=AdpAVk7ivquIhFz0g65Uz437PJ6YuyjFIb4TlWmJ76EqiXmDBvWhXVsrAHziTcvqgfgJJdi3ABabnclm-kPJCG5m&_nc_zt=23&_nc_ht=scontent.fclo1-4.fna&_nc_gid=GwZoJS7PzoGJtfoCLfV56Q&_nc_ss=7b2a8&oh=00_Af6HrvQGFpD6yeTzozSFHAG_uJnekNPrcmu2fPBgcjljaw&oe=69FF3CB6" alt="LDB Logo" class="logo-img">
+                <span class="logo-text" data-editable="navbar-nombre">Legado de Bendición</span>
             </a>
 
             <ul class="nav-links">
@@ -1631,47 +1965,48 @@
                 <li><a href="#horarios">Horarios</a></li>
                 <li><a href="#nosotros">Nosotros</a></li>
                 <li><a href="#eventos">Eventos</a></li>
-                <li class="nav-item-curso"><a href="#curso-biblico">Curso Bíblico</a></li>
                 <li><a href="#contacto">Contacto</a></li>
-                <!-- Mobile Only Buttons -->
-                <li class="mobile-only" style="display: none; margin-top: 1rem; width: 100%; flex-direction: column; gap: 1rem;">
-                    <a href="auth.html" class="btn-primary-solid" style="width: 100%; text-align: center;">Registrarse</a>
-                    <a href="auth.html" class="btn-outline-gold" style="width: 100%; text-align: center;">Iniciar Sesión</a>
-                </li>
             </ul>
 
-
-            <div class="nav-auth-buttons" style="display: flex; gap: 1rem;">
+            <div class="nav-auth-buttons">
                 <a href="auth.html" class="btn-outline-gold" style="padding: 0.5rem 1.2rem; font-size: 0.95rem; border-radius: 25px;" data-editable="navbar-cta1">Iniciar sesión</a>
                 <a href="auth.html" class="btn-primary-solid" style="padding: 0.5rem 1.2rem; font-size: 0.95rem; border-radius: 25px;" data-editable="navbar-cta">Registrarse</a>
             </div>
 
+            <!-- Hamburger Button -->
+            <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Abrir menú">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
 
-            <!-- Mobile Menu Toggle -->
-            <div class="mobile-menu-btn" id="mobile-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+        <!-- Mobile Dropdown Panel -->
+        <div class="mobile-menu-panel" id="mobile-menu">
+            <a href="auth.html" class="btn-mobile-full btn-mobile-outline">Iniciar Sesión</a>
+            <a href="auth.html#register" class="btn-mobile-full btn-mobile-primary">Registrarse</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero" id="inicio">
-        <img data-editable-img="hero-fondo" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2;"><div class="hero-bg-logo"></div>
-        <div class="hero-bg-cross"></div>
-        <div class="hero-glow"></div>
-        <div class="hero-overlay"></div>
+    <section class="hero" id="inicio">
+        <div class="hero-bg">
+            <img src="assets/hero-banner.png" alt="Legado de Bendición Banner">
+            <div class="hero-overlay"></div>
+        </div>
         <div class="hero-content">
             <h1 class="title"><span data-editable="hero-titulo1">Legado de</span> <br> <span class="text-gold-italic" data-editable="hero-titulo2">Bendición</span></h1>
             <p class="description" data-editable="hero-subtitulo">Un lugar donde la fe transforma vidas</p>
+            
             <div class="hero-actions">
-                <a href="#unete" class="btn-primary-solid" data-editable="hero-boton1">Únete a nosotros</a>
+                <a href="auth.html#register" class="btn-primary-solid" data-editable="hero-boton1">Únete a nosotros</a>
                 <a href="#horarios" class="btn-outline-gold" data-editable="hero-boton2">Ver horarios</a>
                 <a href="https://www.google.com/maps/place/Legado+de+Bendici%C3%B3n+-+Iglesia+Cristiana+(Sede+Campestre+Popay%C3%A1n,+La+Rejoya)km+3,7/@2.5234357,-76.592144,16.66z/data=!4m6!3m5!1s0x8e300349f69b60d7:0xecf00a1ea67fb822!8m2!3d2.523302!4d-76.5920842!16s%2Fg%2F11fhz715nw?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn-primary-solid" style="text-decoration: none;">📍 Cómo Llegar</a>
             </div>
         </div>
-    </header>
+    </section>
 
     <!-- Nuestra Historia Section -->
     <section class="section history reveal" id="nosotros">
@@ -1679,7 +2014,7 @@
             <div class="history-grid">
                 <!-- Left: Image -->
                 <div class="history-image-wrapper">
-                    <img src="assets/history-bg.png" alt="Nuestra Congregación" class="history-img" data-editable-img="nosotros-foto">
+                    <img src="https://scontent.fclo1-4.fna.fbcdn.net/v/t51.75761-15/495152861_18385557028190986_2024538039139094638_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=13d280&_nc_ohc=IO6Whn50X04Q7kNvwF8FVVe&_nc_oc=AdpGhSCZGdL1Ea9WTDB4wrxfWZhO_hZOQgGzzvt9zA7AhQEVwhzTJWBfRqke_2BdyqkyoIsjGNpq6WAbbZjtzvCz&_nc_zt=23&_nc_ht=scontent.fclo1-4.fna&_nc_gid=H7bCQwhJOzkb0df438myBg&_nc_ss=7b2a8&oh=00_Af4MJW1eZsk-LW6FmIBd_wvj9SRM_H79WflzpZzMV-XxdA&oe=6A0008B8" alt="Nuestra Congregación" class="history-img" data-editable-img="nosotros-foto">
                     <div class="history-image-overlay"></div>
                 </div>
 
@@ -1762,7 +2097,7 @@
                 <!-- Card 1 -->
                 <div class="event-card">
                     <div class="event-image-wrapper">
-                        <div class="event-placeholder-img"></div>
+                        <img src="https://scontent.fclo1-3.fna.fbcdn.net/v/t51.75761-15/498323388_18386910115190986_5721653297570420112_n.jpg?stp=dst-jpegr_tt6&_nc_cat=106&ccb=1-7&_nc_sid=13d280&_nc_ohc=EEhUA1XfIMAQ7kNvwEKoR6N&_nc_oc=AdoBGUOtBiI0qKVp3Jrr6sCtEQnnL15q9xeGtAX17uzD1WO31f8PkD7rs2uns1M7DBViM0keY7MRxg4sFSyb0jFm&_nc_zt=23&se=-1&_nc_ht=scontent.fclo1-3.fna&_nc_gid=WXktN4HGkQJj1XRx-UnktA&_nc_ss=7b2a8&oh=00_Af4EPbblt_hQ1sY43VNG63bCJkLUOjD5jkPTcLMmP-XtHg&oe=6A000278" alt="Noche de Adoración" class="event-img">
                         <div class="event-overlay"></div>
                         <div class="event-date">
                             <span class="day">15</span>
@@ -1771,15 +2106,15 @@
                     </div>
                     <div class="event-content">
                         <h3 class="event-title">Noche de Adoración</h3>
-                        <p class="event-desc">Un tiempo especial dedicado a buscar la presencia de Dios a través de la música y la oración.</p>
-                        <a href="#" class="btn-outline-gold">Ver más</a>
+                        <p class="event-desc">Un tiempo especial dedicado a buscar la presencia de Dios a través de la música y la oración profunda.</p>
+                        <a href="#" class="event-btn">Saber más</a>
                     </div>
                 </div>
                 
                 <!-- Card 2 -->
                 <div class="event-card">
                     <div class="event-image-wrapper">
-                        <div class="event-placeholder-img"></div>
+                        <img src="https://scontent.fclo1-4.fna.fbcdn.net/v/t51.82787-15/503605123_18393083914190986_5888224054244905506_n.jpg?stp=dst-jpegr_tt6&_nc_cat=111&ccb=1-7&_nc_sid=13d280&_nc_ohc=q6BqYY_ITF8Q7kNvwHm5HMn&_nc_oc=AdoXfjV3gxPYTWrlStjmw-kLFZ3xR7ugbuIWAyQR-yTyn1XZh0Fcw-NITySvh9UMNy-ijL6vAcj0UIZOe63au1Nc&_nc_zt=23&se=-1&_nc_ht=scontent.fclo1-4.fna&_nc_gid=IDVaan2_Zwqs2yKm0mjoZQ&_nc_ss=7b2a8&oh=00_Af58p_OSUwaMdx_Yaw_ZxzhbCqZR8COUqD628XK27NZ2ag&oe=6A0023A5" alt="Retiro de Mujeres" class="event-img">
                         <div class="event-overlay"></div>
                         <div class="event-date">
                             <span class="day">22</span>
@@ -1788,15 +2123,15 @@
                     </div>
                     <div class="event-content">
                         <h3 class="event-title">Retiro de Mujeres</h3>
-                        <p class="event-desc">Dos días de restauración, compañerismo y crecimiento espiritual para todas las mujeres.</p>
-                        <a href="#" class="btn-outline-gold">Ver más</a>
+                        <p class="event-desc">Dos días de restauración, compañerismo y crecimiento espiritual bajo el lema "Mujeres de Legado".</p>
+                        <a href="#" class="event-btn">Saber más</a>
                     </div>
                 </div>
                 
                 <!-- Card 3 -->
                 <div class="event-card">
                     <div class="event-image-wrapper">
-                        <div class="event-placeholder-img"></div>
+                        <img src="https://scontent.fclo1-3.fna.fbcdn.net/v/t51.75761-15/494481092_18384722554190986_8803556754950039175_n.jpg?stp=dst-jpegr_tt6&_nc_cat=101&ccb=1-7&_nc_sid=13d280&_nc_ohc=DOSn0zHRXKYQ7kNvwG0r1uX&_nc_oc=AdpMrEPqIGGotAM2-TeVntImh4BVVy0-kHGDYawIFRV-bFEKaZss5THrWgRRVvYne8IORvkRjqrrZaIoq_amorg9&_nc_zt=23&se=-1&_nc_ht=scontent.fclo1-3.fna&_nc_gid=hkmvU3eMPobiTxx9Llrr-Q&_nc_ss=7b2a8&oh=00_Af7xg3zvm9-cE8mCXbvCy4iGP4fPfdFC0oUmYSL9l5DWbA&oe=69FFFDF1" alt="Conferencia de Liderazgo" class="event-img">
                         <div class="event-overlay"></div>
                         <div class="event-date">
                             <span class="day">05</span>
@@ -1805,8 +2140,8 @@
                     </div>
                     <div class="event-content">
                         <h3 class="event-title">Conferencia de Liderazgo</h3>
-                        <p class="event-desc">Equipando a la próxima generación de líderes para el ministerio y el servicio comunitario.</p>
-                        <a href="#" class="btn-outline-gold">Ver más</a>
+                        <p class="event-desc">Equipando a la próxima generación para el servicio comunitario con principios bíblicos sólidos.</p>
+                        <a href="#" class="event-btn">Saber más</a>
                     </div>
                 </div>
             </div>
@@ -1951,34 +2286,35 @@
         </div>
     </section>
 
-    <!-- Social Media Section -->
     <section class="section social-media reveal" id="redes" style="background-color: var(--bg-main);">
         <div class="container text-center">
             <h2 class="section-title">Nuestras Redes</h2>
-            <p class="section-subtitle">Síguenos en nuestras plataformas para no perderte de nada.</p>
+            <p class="section-subtitle">Conéctate con nuestra comunidad a través de nuestras plataformas digitales.</p>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-top: 3rem;">
+            <div class="social-grid">
                 <!-- Instagram -->
-                <div style="background-color: var(--color-medium-green); border: 1px solid rgba(201, 168, 76, 0.3); border-radius: 8px; padding: 15px; height: 500px; display: flex; flex-direction: column;">
-                    <iframe src="https://www.instagram.com/legadodebendicion/embed" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" style="border-radius: 4px; flex: 1;"></iframe>
+                <div class="social-card">
+                    <iframe src="https://www.instagram.com/legadodebendicion/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
                 </div>
 
                 <!-- Facebook -->
-                <div style="background-color: var(--color-medium-green); border: 1px solid rgba(201, 168, 76, 0.3); border-radius: 8px; padding: 15px; height: 500px; display: flex; justify-content: center; overflow: hidden;">
-                    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FLegadodebendicion&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" width="100%" height="100%" style="border:none;overflow:hidden; border-radius: 4px;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                <div class="social-card">
+                    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FLegadodebendicion&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" style="border:none;overflow:hidden;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
                 </div>
 
                 <!-- YouTube -->
-                <div style="background-color: var(--color-medium-green); border: 1px solid rgba(201, 168, 76, 0.3); border-radius: 8px; padding: 15px; height: 500px; display: flex; flex-direction: column; gap: 1.5rem;">
-                    <div style="position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" src="https://www.youtube.com/embed/CxqqinXiJcw" title="Último Directo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <div style="text-align: left; padding: 0 0.5rem; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
-                        <div>
-                            <h3 style="color: var(--color-primary); font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 0.5rem;">Canal Oficial</h3>
-                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.5;">Revive nuestros servicios, estudios bíblicos y enseñanzas en vivo. Suscríbete para recibir notificaciones de nuestras transmisiones.</p>
+                <div class="social-card">
+                    <div class="social-card-content">
+                        <div class="social-card-header">
+                            <h3>Canal Oficial</h3>
+                            <p>Revive nuestros servicios, estudios bíblicos y enseñanzas en vivo. Suscríbete para recibir notificaciones de nuestras transmisiones y no perderte de nada.</p>
                         </div>
-                        <a href="https://www.youtube.com/@legadodebendicion" target="_blank" class="btn-primary-solid" style="text-align: center; margin-top: auto;">Visitar Canal</a>
+                        <div class="social-video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/CxqqinXiJcw" title="Último Directo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="social-card-footer">
+                            <a href="https://www.youtube.com/@legadodebendicion" target="_blank" class="btn-social-visit">Visitar Canal</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2177,6 +2513,28 @@
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         if(typeof _s !== 'undefined') cargarContenido();
+
+        // Mobile Menu Toggle Logic
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileToggle && mobileMenu) {
+            mobileToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+                const isOpen = mobileMenu.classList.contains('active');
+                mobileToggle.innerHTML = isOpen 
+                    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
+                    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+            });
+            
+            // Close menu on link click
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                    mobileToggle.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+                });
+            });
+        }
     });
     </script>
 

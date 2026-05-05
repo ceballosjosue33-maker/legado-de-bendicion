@@ -46,6 +46,13 @@ document.getElementById('link-back-login').addEventListener('click', e => { e.pr
 document.getElementById('link-forgot').addEventListener('click', e => { e.preventDefault(); showView(viewRecover, 'Recuperar contraseña'); });
 document.getElementById('link-back-login2').addEventListener('click', e => { e.preventDefault(); showView(viewLogin, 'Inicia sesión en tu cuenta'); });
 
+// ── Check for hash to show specific view ──
+window.addEventListener('load', () => {
+    if (window.location.hash === '#register') {
+        showView(viewRegister, 'Crea tu cuenta');
+    }
+});
+
 // ── LOGIN ─────────────────────────────────
 document.getElementById('form-login').addEventListener('submit', async e => {
     e.preventDefault();
