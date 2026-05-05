@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pastor | Legado de Bendición</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="dashboard-pastor.css">
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">Legado de Bendición</h2>
+                <p class="sidebar-subtitle">Panel Pastoral</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-target="view-stats">
+                    <span class="nav-icon">📊</span>
+                    Estadísticas Generales
+                </button>
+                <button class="nav-item" data-target="view-users">
+                    <span class="nav-icon">👥</span>
+                    Gestión de Usuarios
+                </button>
+                <button class="nav-item" data-target="view-course">
+                    <span class="nav-icon">📚</span>
+                    Curso Bíblico
+                </button>
+                <button class="nav-item" data-target="view-roles-log">
+                    <span class="nav-icon">📜</span>
+                    Historial de Roles
+                </button>
+                <button class="nav-item" data-target="view-content">
+                    <span class="nav-icon">🌐</span>
+                    Contenido Web
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- HEADER -->
+            <header class="top-header">
+                <h1 id="page-title" class="page-title">Estadísticas Generales</h1>
+                <div class="user-profile">
+                    <div class="avatar-placeholder" id="user-avatar">P</div>
+                    <span id="user-name">Pastor</span>
+                </div>
+            </header>
+
+            <!-- VIEW: STATS -->
+            <section id="view-stats" class="view-section active">
+                <!-- KPIs -->
+                <div class="kpi-grid-4">
+                    <div class="kpi-card">
+                        <div class="kpi-title">Miembros Activos</div>
+                        <div class="kpi-value" id="kpi-activos">0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Crecimiento (Este Mes)</div>
+                        <div class="kpi-value" id="kpi-crecimiento">0</div>
+                        <div class="kpi-subtext" id="kpi-crecimiento-sub">vs mes anterior</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Asistencia Dominical (Promedio)</div>
+                        <div class="kpi-value" id="kpi-asistencia">0</div>
+                        <div class="kpi-subtext">Últimas 4 semanas</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Avance Curso Bíblico</div>
+                        <div class="kpi-value" id="kpi-curso-promedio">0%</div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 1 -->
+                <div class="charts-grid-half mt-2">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Crecimiento de Miembros (12 Meses)</h3>
+                        <canvas id="chartGrowth"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Asistencia Semanal por Culto</h3>
+                        <canvas id="chartAttendance"></canvas>
+                    </div>
+                </div>
+
+                <!-- Charts Row 2 -->
+                <div class="charts-grid-half mt-2">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Distribución de Roles</h3>
+                        <div style="max-height: 250px; display: flex; justify-content: center;">
+                            <canvas id="chartRoles"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Top 5 Líderes (Progreso del Grupo)</h3>
+                        <canvas id="chartLeaders"></canvas>
+                    </div>
+                </div>
+
+                <!-- Progress Table -->
+                <div class="table-card mt-3">
+                    <div class="flex-between mb-2">
+                        <h3 class="chart-title m-0">Progreso del Curso por Miembro</h3>
+                        <button class="btn-primary-solid btn-small flex-align-center gap-1" id="btn-export-pdf">
+                            <span>📄</span> Exportar a PDF
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="table-progress">
+                            <thead>
+                                <tr>
+                                    <th data-sort="nombre" class="sortable">Nombre <span>↕</span></th>
+                                    <th data-sort="rol" class="sortable">Rol <span>↕</span></th>
+                                    <th data-sort="lider" class="sortable">Líder Asignado <span>↕</span></th>
+                                    <th data-sort="modulos" class="sortable">Módulos Leídos <span>↕</span></th>
+                                    <th data-sort="porcentaje" class="sortable">Porcentaje <span>↕</span></th>
+                                    <th data-sort="actividad" class="sortable">Última Actividad <span>↕</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-progress-body">
+                                <tr><td colspan="6" class="text-center">Cargando datos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: USERS -->
+            <section id="view-users" class="view-section">
+                <div class="filters-bar">
+                    <input type="text" id="search-user" class="form-input search-input" placeholder="Buscar por nombre o email...">
+                    <select id="filter-role" class="form-select">
+                        <option value="">Todos los roles</option>
+                        <option value="pastor">Pastores</option>
+                        <option value="lider">Líderes</option>
+                        <option value="discipulo">Discípulos</option>
+                        <option value="estudiante">Estudiantes</option>
+                    </select>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Foto</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Líder Asignado</th>
+                                    <th>Fecha Reg.</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-users-body">
+                                <tr><td colspan="7" class="text-center">Cargando usuarios...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: ROLES LOG -->
+            <section id="view-roles-log" class="view-section">
+                <div class="flex-between mb-2">
+                    <h3 class="section-heading">Historial de Roles</h3>
+                    <span class="text-secondary">Registro de cambios en la plataforma</span>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Usuario Afectado</th>
+                                    <th>Rol Anterior</th>
+                                    <th>Rol Nuevo</th>
+                                    <th>Cambiado Por</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-log-body">
+                                <tr><td colspan="5" class="text-center">Cargando historial...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: COURSE -->
+            <section id="view-course" class="view-section">
+                <div class="flex-between mb-2">
+                    <h3 class="section-heading">Gestión de Módulos</h3>
+                    <button class="btn-primary" id="btn-open-new-module">Nuevo Módulo</button>
+                </div>
+                
+                <!-- Modules List -->
+                <div class="modules-grid" id="modules-container">
+                    <p class="text-secondary text-center w-100">Cargando módulos...</p>
+                </div>
+
+                <!-- Course Progress Table -->
+                <div class="table-card mt-3">
+                    <h3 class="chart-title">Progreso de Usuarios</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Progreso Global</th>
+                                    <th>Último Acceso</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-course-progress">
+                                <tr><td colspan="3" class="text-center">Cargando progreso...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: CONTENT -->
+            <section id="view-content" class="view-section">
+                <h3 class="section-heading mb-2">Editor de Contenido Web</h3>
+                
+                <!-- Seccion Hero -->
+                <div class="content-form-card">
+                    <h4>Sección Hero</h4>
+                    <form class="content-form" id="form-hero">
+                        <input type="hidden" id="content-hero-id" value="hero">
+                        <div class="form-group">
+                            <label>Título Principal</label>
+                            <input type="text" class="form-input" id="hero-title">
+                        </div>
+                        <div class="form-group">
+                            <label>Subtítulo</label>
+                            <input type="text" class="form-input" id="hero-subtitle">
+                        </div>
+                        <div class="form-group">
+                            <label>Imagen de Fondo (Opcional)</label>
+                            <input type="file" class="form-file" id="hero-image" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar Hero</button>
+                    </form>
+                </div>
+
+                <!-- Seccion Horarios -->
+                <div class="content-form-card mt-2">
+                    <h4>Sección Nosotros</h4>
+                    <form class="content-form" id="form-nosotros">
+                        <input type="hidden" id="content-nosotros-id" value="nosotros">
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" class="form-input" id="nosotros-title">
+                        </div>
+                        <div class="form-group">
+                            <label>Historia de la Iglesia</label>
+                            <textarea class="form-input" id="nosotros-text" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Misión (Subtítulo)</label>
+                            <textarea class="form-input" id="nosotros-mision" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar Nosotros</button>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL: Confirm Role Change -->
+    <div class="modal" id="modal-role-confirm">
+        <div class="modal-content">
+            <h3 class="modal-title">Confirmar Cambio de Rol</h3>
+            <p>¿Estás seguro de cambiar el rol de <strong id="modal-role-user-name"></strong> a <strong id="modal-role-new" class="text-gold"></strong>?</p>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="btn-cancel-role">Cancelar</button>
+                <button class="btn-primary" id="btn-confirm-role">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: New Module -->
+    <div class="modal" id="modal-new-module">
+        <div class="modal-content modal-lg">
+            <h3 class="modal-title">Crear Nuevo Módulo</h3>
+            <form id="form-new-module">
+                <div class="form-group">
+                    <label>Título del Módulo</label>
+                    <input type="text" class="form-input" id="mod-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción Breve</label>
+                    <input type="text" class="form-input" id="mod-desc" required>
+                </div>
+                <div class="form-group">
+                    <label>Contenido del Módulo (Texto Completo)</label>
+                    <textarea class="form-input" id="mod-content" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Orden (Número)</label>
+                    <input type="number" class="form-input" id="mod-order" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="flex-align-center gap-1">
+                        <input type="checkbox" id="mod-active" checked> Módulo Activo y Visible
+                    </label>
+                </div>
+                <!-- SOLO PASTOR: File Upload -->
+                <div class="form-group file-upload-group">
+                    <label>Archivo Adjunto (PDF) - Solo Pastor</label>
+                    <input type="file" class="form-file" id="mod-file" accept=".pdf">
+                    <small class="text-secondary">El archivo se guardará de forma segura en el bucket 'curso-materiales'.</small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="btn-cancel-module">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btn-save-module">Guardar Módulo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts (load order matters) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="config.js"></script>
+    <script src="dashboard-pastor.js"></script>
+</body>
+</html>

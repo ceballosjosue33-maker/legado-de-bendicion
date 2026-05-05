@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración Inicial | Legado de Bendición</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0A0F0A; 
+            --color-medium-green: #1A3A1A;
+            --color-primary: #C9A84C;
+            --text-primary: #F5F0E8;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+        .setup-card {
+            background-color: var(--color-medium-green);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 8px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1 { color: var(--color-primary); font-family: var(--font-heading); margin-bottom: 1rem; }
+        p { color: #8A9E8A; margin-bottom: 2rem; line-height: 1.5; }
+        .form-group { margin-bottom: 1.5rem; text-align: left; }
+        label { display: block; margin-bottom: 0.5rem; color: #8A9E8A; font-size: 0.9rem; }
+        input {
+            width: 100%; padding: 0.8rem; background-color: rgba(10,15,10,0.5);
+            border: 1px solid rgba(201,168,76,0.3); border-radius: 8px;
+            color: var(--text-primary); font-family: var(--font-body); outline: none;
+        }
+        input:focus { border-color: var(--color-primary); }
+        button {
+            width: 100%; background-color: var(--color-primary); color: #0A0F0A;
+            border: none; border-radius: 8px; padding: 1rem; font-weight: 600;
+            font-family: var(--font-body); font-size: 1rem; cursor: pointer;
+            transition: all 0.2s; margin-top: 1rem;
+        }
+        button:hover { background-color: #E8C97A; transform: translateY(-2px); }
+        .msg { margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none; }
+        .msg.success { background-color: rgba(40,167,69,0.1); color: #8ade8a; border: 1px solid rgba(40,167,69,0.3); display: block; }
+        .msg.error { background-color: rgba(220,53,69,0.1); color: #ff6b6b; border: 1px solid rgba(220,53,69,0.3); display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="setup-card">
+        <h1>Cuenta Administrador</h1>
+        <p>Crea el usuario con perfil de <strong>Pastor</strong>. Esta cuenta tendrá control total sobre la plataforma.</p>
+        
+        <form id="setup-form">
+            <div class="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" id="p-nombre" value="Pastor Principal" required>
+            </div>
+            <div class="form-group">
+                <label>Correo Electrónico (Login)</label>
+                <input type="email" id="p-email" value="admin@legadodebendicion.com" required>
+            </div>
+            <div class="form-group">
+                <label>Contraseña Segura</label>
+                <input type="password" id="p-password" placeholder="Mínimo 6 caracteres" required>
+            </div>
+            <button type="submit" id="btn-submit">Crear Cuenta Pastor</button>
+            <div id="msg-box" class="msg"></div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+        document.getElementById('setup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            const msgBox = document.getElementById('msg-box');
+            btn.disabled = true; btn.textContent = 'Creando...';
+            
+            const nombre = document.getElementById('p-nombre').value.trim();
+            const email = document.getElementById('p-email').value.trim();
+            const password = document.getElementById('p-password').value;
+
+            try {
+                // 1. Crear en Auth
+                const { data, error } = await window.sb.auth.signUp({
+                    email,
+                    password,
+                    options: { data: { nombre } }
+                });
+                if (error) throw error;
+
+                // 2. Forzar rol en tabla usuarios
+                if (data.user) {
+                    const { error: dbErr } = await window.sb.from('usuarios').upsert({
+                        id: data.user.id,
+                        nombre,
+                        email,
+                        rol: 'pastor', // <- Asignación directa
+                        activo: true
+                    });
+                    if (dbErr) throw dbErr;
+                }
+
+                msgBox.className = 'msg success';
+                msgBox.innerHTML = `¡Cuenta creada exitosamente!<br><br>Usuario: ${email}<br>Ya puedes <a href="auth.html" style="color:white">iniciar sesión</a>.`;
+                document.getElementById('setup-form').reset();
+            } catch (err) {
+                msgBox.className = 'msg error';
+                msgBox.textContent = err.message;
+            } finally {
+                btn.disabled = false; btn.textContent = 'Crear Cuenta Pastor';
+            }
+        });
+    </script>
+</body>
+</html>

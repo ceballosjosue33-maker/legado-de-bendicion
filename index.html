@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legado de Bendición | Iglesia Cristiana</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        /* =========================================
+   Variables & Theme
+   ========================================= */
+        :root {
+            /* Colors */
+            --bg-main: #0A0F0A;
+            /* Verde muy oscuro casi negro */
+            --bg-navbar: rgba(10, 15, 10, 0.65);
+            /* Semi-transparent #0A0F0A */
+
+            --color-primary: #C9A84C;
+            /* Gold */
+            --color-primary-hover: #E8C97A;
+            /* Light Gold */
+            --color-primary-dark: #A68739;
+
+            --color-dark-green: #0F1F0F;
+            --color-medium-green: #1A3A1A;
+
+            --text-primary: #F5F0E8;
+            /* Warm white */
+            --text-secondary: #8A9E8A;
+            /* Muted secondary text */
+
+            /* Typography */
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Outfit', sans-serif;
+
+            /* Layout & Utilities */
+            --max-width: 1200px;
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* =========================================
+   Reset & Base Styles
+   ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: var(--font-heading);
+            font-weight: 500;
+            line-height: 1.2;
+            color: var(--color-primary);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition-smooth);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            width: 90%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* =========================================
+   Navbar (Fixed, Semi-transparent, Blur)
+   ========================================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: transparent;
+            /* Starts transparent */
+            padding: 1.5rem 0;
+            transition: var(--transition-smooth);
+            border-bottom: 1px solid rgba(201, 168, 76, 0);
+        }
+
+        .navbar.scrolled {
+            background-color: var(--bg-navbar);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .nav-container {
+            width: 90%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links li a {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 400;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 1px;
+            background-color: var(--color-primary);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--color-primary);
+        }
+
+        .nav-links li a:hover::after,
+        .nav-links li a.active::after {
+            width: 100%;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: var(--color-primary);
+            z-index: -1;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-cta:hover {
+            color: var(--bg-main);
+        }
+
+        .btn-cta:hover::before {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 2px;
+            background-color: var(--color-primary);
+            transition: var(--transition-smooth);
+        }
+
+        /* =========================================
+   Hero Section
+   ========================================= */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: var(--bg-main);
+            overflow: hidden;
+        }
+
+        .hero-bg-cross {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(to right, transparent 49.8%, rgba(201, 168, 76, 0.03) 49.8%, rgba(201, 168, 76, 0.03) 50.2%, transparent 50.2%),
+                linear-gradient(to bottom, transparent 35%, rgba(201, 168, 76, 0.03) 35%, rgba(201, 168, 76, 0.03) 35.4%, transparent 35.4%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(201, 168, 76, 0.12) 0%, rgba(10, 15, 10, 0) 60%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(10, 15, 10, 0.1), var(--bg-main));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .text-gold-italic {
+            color: var(--color-primary);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1.5s ease forwards;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .subtitle {
+            display: block;
+            color: var(--color-primary-hover);
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content .title {
+            font-size: 4.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content .description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-primary-solid,
+        .btn-outline-gold {
+            padding: 0.8rem 2.5rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: var(--bg-main);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background-color: transparent;
+            color: var(--color-primary);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .btn-primary-solid {
+            background-color: var(--color-primary);
+            color: var(--bg-main);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn-primary-solid:hover {
+            background-color: var(--color-primary-hover);
+            border-color: var(--color-primary-hover);
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+        }
+
+        .btn-outline-gold {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn-outline-gold:hover {
+            background-color: rgba(201, 168, 76, 0.1);
+            box-shadow: inset 0 0 10px rgba(201, 168, 76, 0.2);
+        }
+
+        /* =========================================
+   General Sections
+   ========================================= */
+        .section {
+            padding: 6rem 0;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* History Section */
+        .history {
+            background: linear-gradient(to bottom, var(--bg-main), var(--color-dark-green));
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .history-image-wrapper {
+            position: relative;
+            height: 600px;
+            border: 2px solid var(--color-primary);
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .history-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .history-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 31, 15, 0.4);
+            /* subtle dark green overlay */
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .text-white {
+            color: var(--text-primary);
+        }
+
+        .history-desc {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        .history-quote {
+            background-color: var(--color-medium-green);
+            border-left: 4px solid var(--color-primary);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-style: italic;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .quote-title {
+            display: block;
+            color: var(--color-primary);
+            font-weight: 600;
+            font-style: normal;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            border-top: 1px solid rgba(201, 168, 76, 0.2);
+            padding-top: 3rem;
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .metric-number {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            color: var(--color-primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Schedule Section */
+        .schedule {
+            background-color: var(--color-dark-green);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .schedule-card {
+            background-color: var(--bg-main);
+            padding: 3rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--color-primary);
+            transition: var(--transition-smooth);
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(201, 168, 76, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .schedule-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .schedule-card .time {
+            color: var(--color-primary);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .schedule-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Events Section */
+        .events {
+            background: linear-gradient(to bottom, var(--color-dark-green), var(--bg-main));
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .event-card {
+            background-color: var(--color-medium-green);
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            overflow: hidden;
+            border-radius: 4px;
+            text-align: left;
+            transition: var(--transition-smooth);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            border-color: var(--color-primary);
+        }
+
+        .event-image-wrapper {
+            position: relative;
+            height: 220px;
+            width: 100%;
+        }
+
+        .event-placeholder-img {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-medium-green), var(--color-dark-green));
+        }
+
+        .event-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 31, 15, 0.3);
+            /* verde overlay */
+            z-index: 1;
+        }
+
+        .event-date {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--bg-main);
+            color: var(--color-primary);
+            padding: 0.5rem 1rem;
+            text-align: center;
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 2px;
+            z-index: 2;
+        }
+
+        .event-date .day {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1;
+            font-family: var(--font-heading);
+        }
+
+        .event-date .month {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .event-content {
+            padding: 2rem;
+        }
+
+        .event-title {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: var(--font-heading);
+        }
+
+        .event-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .events-action {
+            margin-top: 3rem;
+        }
+
+        /* Sermons Section */
+        .sermons {
+            background-color: var(--bg-main);
+        }
+
+        .sermon-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .pill {
+            background-color: var(--color-medium-green);
+            color: var(--text-primary);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
+        }
+
+        .pill:hover {
+            border-color: var(--color-primary);
+        }
+
+        .pill.active {
+            background-color: var(--color-primary);
+            color: var(--bg-main);
+            font-weight: 600;
+        }
+
+        .sermons-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .sermon-card {
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .sermon-card:hover .sermon-thumb {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            border-color: var(--color-primary);
+        }
+
+        .sermon-card:hover .play-btn-circle {
+            transform: translate(-50%, -50%) scale(1.1);
+            background-color: var(--color-primary-hover);
+        }
+
+        .sermon-thumb {
+            position: relative;
+            height: 200px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .thumb-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-medium-green), var(--color-dark-green));
+        }
+
+        .play-btn-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-icon {
+            color: var(--bg-main);
+            font-size: 1.2rem;
+            margin-left: 4px;
+        }
+
+        .sermon-title {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-heading);
+        }
+
+        .sermon-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Resources Sub-section */
+        .resources-wrapper {
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+            padding-top: 4rem;
+        }
+
+        .resources-title {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: var(--font-heading);
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .resource-item {
+            background-color: var(--color-dark-green);
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            border-radius: 4px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .resource-item:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+        }
+
+        .resource-icon {
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .resource-name {
+            color: var(--text-primary);
+            flex: 1;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-small {
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Course Section */
+        .course {
+            background: linear-gradient(to bottom, var(--bg-main), var(--color-dark-green));
+        }
+
+        .course-progress-wrapper {
+            background-color: var(--bg-main);
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .progress-text {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .progress-percent {
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background-color: var(--color-medium-green);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--color-primary);
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+        }
+
+        .course-modules {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .module-item {
+            background-color: var(--color-dark-green);
+            border-left: 4px solid var(--color-primary);
+            border-radius: 0 4px 4px 0;
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition-smooth);
+            border-top: 1px solid transparent;
+            border-right: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        .module-item:hover {
+            border-color: var(--color-primary) rgba(201, 168, 76, 0.2) rgba(201, 168, 76, 0.2) var(--color-primary);
+        }
+
+        .module-item.active {
+            background-color: var(--color-medium-green);
+            border-color: var(--color-primary) rgba(201, 168, 76, 0.3) rgba(201, 168, 76, 0.3) var(--color-primary);
+        }
+
+        .module-item.locked {
+            border-left-color: rgba(138, 158, 138, 0.3);
+            opacity: 0.7;
+        }
+
+        .module-status {
+            width: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .status-icon {
+            font-size: 1.2rem;
+        }
+
+        .completed .status-icon {
+            color: #8ade8a;
+            /* light green check */
+        }
+
+        .active .status-icon {
+            color: var(--color-primary);
+            /* gold book */
+        }
+
+        .locked .status-icon {
+            color: rgba(138, 158, 138, 0.5);
+            /* grey lock */
+        }
+
+        .module-title {
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .locked .module-title {
+            color: var(--text-secondary);
+        }
+
+        .module-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .course-panel {
+            background-color: var(--color-dark-green);
+            border: 1px solid rgba(201, 168, 76, 0.1);
+            border-radius: 4px;
+            padding: 3rem;
+        }
+
+        .lesson-header {
+            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .lesson-title {
+            font-family: var(--font-heading);
+            color: var(--color-primary);
+            font-size: 2.2rem;
+        }
+
+        .lesson-content {
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        .lesson-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .lesson-attachments {
+            background-color: rgba(26, 58, 26, 0.3);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .attachments-title {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-family: var(--font-heading);
+        }
+
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: var(--color-medium-green);
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .attachment-icon {
+            color: var(--color-primary);
+            display: flex;
+        }
+
+        .attachment-name {
+            color: var(--text-primary);
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .lesson-assignment {
+            border-top: 1px solid rgba(201, 168, 76, 0.2);
+            padding-top: 3rem;
+        }
+
+        .assignment-title {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-heading);
+        }
+
+        .assignment-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .assignment-textarea {
+            width: 100%;
+            background-color: var(--bg-main);
+            border: 1px solid var(--color-medium-green);
+            border-radius: 4px;
+            color: var(--text-primary);
+            padding: 1rem;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            resize: vertical;
+            transition: var(--transition-smooth);
+        }
+
+        .assignment-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .upload-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .upload-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px dashed rgba(201, 168, 76, 0.5);
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        .upload-label:hover {
+            background-color: rgba(201, 168, 76, 0.03);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .upload-hint {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .btn-submit-task {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(to bottom, var(--color-dark-green), var(--bg-main));
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background-color: var(--color-medium-green);
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            border-radius: 4px;
+            padding: 1.2rem;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 10px rgba(201, 168, 76, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-info-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .contact-icon {
+            color: var(--color-primary);
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+
+        .contact-text h4 {
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-text p {
+            color: var(--text-primary);
+        }
+
+        .social-links h4 {
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+        }
+
+        .social-circle:hover {
+            background-color: var(--color-primary);
+            color: var(--bg-main);
+            transform: translateY(-3px);
+        }
+
+        .map-wrapper {
+            position: relative;
+            height: 350px;
+            border: 2px solid var(--color-primary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, var(--bg-main), var(--bg-main) 10px, var(--color-medium-green) 10px, var(--color-medium-green) 20px);
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 31, 15, 0.6);
+            /* overlay verde */
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .text-light {
+            color: var(--text-primary);
+        }
+
+        .btn-large {
+            font-size: 1.1rem;
+            padding: 1rem 3rem;
+            margin-top: 1rem;
+        }
+
+        /* Footer */
+        .footer-new {
+            background: linear-gradient(to bottom, var(--bg-main), #060C06);
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .footer-gradient-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+        }
+
+        .footer-grid-new {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            padding: 4rem 0 3rem;
+        }
+
+        .footer-brand .logo {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .footer-verse {
+            font-family: var(--font-heading);
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            line-height: 1.6;
+            max-width: 350px;
+        }
+
+        .footer-links-new h4,
+        .footer-social-new h4 {
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links-new ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links-new ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links-new ul li a {
+            color: rgba(245, 240, 232, 0.6);
+            /* blanco apagado */
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-links-new ul li a:hover {
+            color: var(--color-primary);
+            padding-left: 5px;
+        }
+
+        .social-icons-footer {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icons-footer .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            color: var(--color-primary);
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .social-icons-footer .social-icon:hover {
+            background-color: var(--color-primary);
+            color: #060C06;
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom-new {
+            border-top: 1px solid rgba(201, 168, 76, 0.2);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer-bottom-new p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* =========================================
+   Responsive Design
+   ========================================= */
+        @media (max-width: 992px) {
+            .hero-content .title {
+                font-size: 3.5rem;
+            }
+
+            .history-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-image-wrapper {
+                height: 400px;
+                margin-bottom: 2rem;
+            }
+
+            .events-grid,
+            .sermons-grid,
+            .resources-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid-new {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 80%;
+                max-width: 400px;
+                background-color: var(--bg-main);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: var(--transition-smooth);
+                border-left: 1px solid rgba(201, 168, 76, 0.2);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-auth-buttons {
+                display: none;
+            }
+
+            .hero-content .title {
+                font-size: 2.8rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .events-grid,
+            .sermons-grid,
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid-new {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">Legado de Bendición</a>
+
+            <ul class="nav-links">
+                <li><a href="#inicio" class="active">Inicio</a></li>
+                <li><a href="#horarios">Horarios</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#eventos">Eventos</a></li>
+                <li><a href="#sermones">Sermones</a></li>
+                <li><a href="#curso-biblico">Curso Bíblico</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+
+
+            <div class="nav-auth-buttons" style="display: flex; gap: 1rem;">
+                <a href="auth.html" class="btn-outline-gold" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Iniciar
+                    sesión</a>
+                <a href="auth.html" class="btn-primary-solid"
+                    style="padding: 0.4rem 1rem; font-size: 0.85rem;">Registrarse</a>
+            </div>
+
+
+            <!-- Mobile Menu Toggle -->
+            <div class="mobile-menu-btn" id="mobile-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="inicio">
+        <div class="hero-bg-cross"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="title">Legado de <span class="text-gold-italic">Bendición</span></h1>
+            <p class="description">Un lugar donde la fe transforma vidas</p>
+            <div class="hero-actions">
+                <a href="#unete" class="btn-primary-solid">Únete a nosotros</a>
+                <a href="#horarios" class="btn-outline-gold">Ver horarios</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nuestra Historia Section -->
+    <section class="section history" id="nosotros">
+        <div class="container">
+            <div class="history-grid">
+                <!-- Left: Image -->
+                <div class="history-image-wrapper">
+                    <img src="assets/history-bg.png" alt="Nuestra Congregación" class="history-img">
+                    <div class="history-image-overlay"></div>
+                </div>
+
+                <!-- Right: Text -->
+                <div class="history-content">
+                    <h2 class="section-title text-white">Nuestra Historia</h2>
+                    <p class="history-desc">Todo comenzó con un pequeño grupo de creyentes que soñaban con establecer un
+                        refugio de amor y restauración. A través de los años, hemos visto la mano de Dios obrar
+                        poderosamente, transformando vidas y levantando una comunidad apasionada por Su presencia y Su
+                        propósito.</p>
+
+                    <blockquote class="history-quote">
+                        <span class="quote-title">Nuestra Misión</span>
+                        Edificar una familia espiritual fundamentada en el amor de Cristo, donde cada persona es
+                        equipada para vivir en victoria.
+                    </blockquote>
+
+                    <blockquote class="history-quote">
+                        <span class="quote-title">Nuestra Visión</span>
+                        Trascender generaciones, dejando un legado de fe inquebrantable que impacte nuestra ciudad y las
+                        naciones.
+                    </blockquote>
+                </div>
+            </div>
+
+            <!-- Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <div class="metric-number">15+</div>
+                    <div class="metric-label">Años de ministerio</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-number">200+</div>
+                    <div class="metric-label">Familias</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-number">8</div>
+                    <div class="metric-label">Grupos de vida</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section class="section schedule" id="horarios">
+        <div class="container text-center">
+            <h2 class="section-title">Nuestros Encuentros</h2>
+            <p class="section-subtitle">Acompáñanos cada semana para celebrar juntos</p>
+
+            <div class="schedule-grid">
+                <div class="schedule-card">
+                    <h3>Culto Dominical</h3>
+                    <div class="time">Dom 9:00 AM y 11:30 AM</div>
+                    <p>Tiempo de alabanza, adoración y mensaje de fe.</p>
+                </div>
+                <div class="schedule-card">
+                    <h3>Estudio Bíblico</h3>
+                    <div class="time">Mié 7:00 PM</div>
+                    <p>Profundizando en las verdades de la Palabra de Dios.</p>
+                </div>
+                <div class="schedule-card">
+                    <h3>Jóvenes</h3>
+                    <div class="time">Vie 7:00 PM</div>
+                    <p>Un espacio dinámico para la nueva generación.</p>
+                </div>
+                <div class="schedule-card">
+                    <h3>Oración</h3>
+                    <div class="time">Mar 6:30 AM</div>
+                    <p>Buscando la dirección y el favor del Señor juntos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section class="section events" id="eventos">
+        <div class="container text-center">
+            <h2 class="section-title">Próximos Eventos</h2>
+            <p class="section-subtitle">Acompáñanos y sé parte de nuestra comunidad en acción.</p>
+
+            <div class="events-grid">
+                <!-- Card 1 -->
+                <div class="event-card">
+                    <div class="event-image-wrapper">
+                        <div class="event-placeholder-img"></div>
+                        <div class="event-overlay"></div>
+                        <div class="event-date">
+                            <span class="day">15</span>
+                            <span class="month">OCT</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Noche de Adoración</h3>
+                        <p class="event-desc">Un tiempo especial dedicado a buscar la presencia de Dios a través de la música y la oración.</p>
+                        <a href="#" class="btn-outline-gold">Ver más</a>
+                    </div>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="event-card">
+                    <div class="event-image-wrapper">
+                        <div class="event-placeholder-img"></div>
+                        <div class="event-overlay"></div>
+                        <div class="event-date">
+                            <span class="day">22</span>
+                            <span class="month">OCT</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Retiro de Mujeres</h3>
+                        <p class="event-desc">Dos días de restauración, compañerismo y crecimiento espiritual para todas las mujeres.</p>
+                        <a href="#" class="btn-outline-gold">Ver más</a>
+                    </div>
+                </div>
+                
+                <!-- Card 3 -->
+                <div class="event-card">
+                    <div class="event-image-wrapper">
+                        <div class="event-placeholder-img"></div>
+                        <div class="event-overlay"></div>
+                        <div class="event-date">
+                            <span class="day">05</span>
+                            <span class="month">NOV</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Conferencia de Liderazgo</h3>
+                        <p class="event-desc">Equipando a la próxima generación de líderes para el ministerio y el servicio comunitario.</p>
+                        <a href="#" class="btn-outline-gold">Ver más</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="events-action">
+                <a href="#eventos-todos" class="btn-primary-solid">Ver todos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sermones y Recursos Section -->
+    <section class="section sermons" id="sermones">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-title">Sermones y Recursos</h2>
+                <p class="section-subtitle">Alimenta tu fe con nuestros últimos mensajes y materiales de estudio.</p>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="sermon-filters">
+                <button class="pill active">Todos</button>
+                <button class="pill">Series</button>
+                <button class="pill">Especiales</button>
+                <button class="pill">Jóvenes</button>
+            </div>
+
+            <!-- Sermons Grid -->
+            <div class="sermons-grid">
+                <!-- Sermon Card 1 -->
+                <div class="sermon-card">
+                    <div class="sermon-thumb">
+                        <div class="thumb-placeholder"></div>
+                        <div class="play-btn-circle">
+                            <span class="play-icon">▶</span>
+                        </div>
+                    </div>
+                    <div class="sermon-info">
+                        <h3 class="sermon-title">Fundamentos Inquebrantables</h3>
+                        <p class="sermon-meta">Pr. Juan Carlos • 01 Nov, 2026</p>
+                    </div>
+                </div>
+
+                <!-- Sermon Card 2 -->
+                <div class="sermon-card">
+                    <div class="sermon-thumb">
+                        <div class="thumb-placeholder"></div>
+                        <div class="play-btn-circle">
+                            <span class="play-icon">▶</span>
+                        </div>
+                    </div>
+                    <div class="sermon-info">
+                        <h3 class="sermon-title">El Poder de la Gracia</h3>
+                        <p class="sermon-meta">Pr. Marcos Silva • 25 Oct, 2026</p>
+                    </div>
+                </div>
+
+                <!-- Sermon Card 3 -->
+                <div class="sermon-card">
+                    <div class="sermon-thumb">
+                        <div class="thumb-placeholder"></div>
+                        <div class="play-btn-circle">
+                            <span class="play-icon">▶</span>
+                        </div>
+                    </div>
+                    <div class="sermon-info">
+                        <h3 class="sermon-title">Llamados con Propósito</h3>
+                        <p class="sermon-meta">Pra. María Pérez • 18 Oct, 2026</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recursos Sub-section -->
+            <div class="resources-wrapper">
+                <h3 class="resources-title">Material de Estudio</h3>
+                <div class="resources-grid">
+                    <!-- Resource 1 -->
+                    <div class="resource-item">
+                        <div class="resource-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="resource-name">Guía de Estudio - Fundamentos.pdf</div>
+                        <a href="#" class="btn-outline-gold btn-small">Descargar</a>
+                    </div>
+                    <!-- Resource 2 -->
+                    <div class="resource-item">
+                        <div class="resource-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="resource-name">Devocional 30 Días.pdf</div>
+                        <a href="#" class="btn-outline-gold btn-small">Descargar</a>
+                    </div>
+                    <!-- Resource 3 -->
+                    <div class="resource-item">
+                        <div class="resource-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="resource-name">Estatutos de la Iglesia.pdf</div>
+                        <a href="#" class="btn-outline-gold btn-small">Descargar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Curso Bíblico Section -->
+    <section class="section course" id="curso-biblico">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-title">Curso Bíblico</h2>
+                <p class="section-subtitle">Tu camino de crecimiento espiritual paso a paso.</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="course-progress-wrapper">
+                <div class="progress-info">
+                    <span class="progress-text">Tu progreso: Fundamentos de Fe</span>
+                    <span class="progress-percent">40%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: 40%;"></div>
+                </div>
+            </div>
+
+            <div class="course-grid">
+                <!-- Left: Modules List -->
+                <div class="course-modules">
+                    <!-- Module 1: Completed -->
+                    <div class="module-item completed">
+                        <div class="module-status">
+                            <span class="status-icon">✓</span>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Módulo 1: Salvación</h4>
+                            <p class="module-desc">Comprendiendo el regalo inmerecido de Dios.</p>
+                        </div>
+                    </div>
+
+                    <!-- Module 2: Completed -->
+                    <div class="module-item completed">
+                        <div class="module-status">
+                            <span class="status-icon">✓</span>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Módulo 2: Arrepentimiento</h4>
+                            <p class="module-desc">El cambio de mente que transforma el corazón.</p>
+                        </div>
+                    </div>
+
+                    <!-- Module 3: Available / Active -->
+                    <div class="module-item active">
+                        <div class="module-status">
+                            <span class="status-icon">📖</span>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Módulo 3: Bautismo</h4>
+                            <p class="module-desc">El paso público de fe y obediencia.</p>
+                        </div>
+                    </div>
+
+                    <!-- Module 4: Locked -->
+                    <div class="module-item locked">
+                        <div class="module-status">
+                            <span class="status-icon">🔒</span>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Módulo 4: El Espíritu Santo</h4>
+                            <p class="module-desc">Conociendo a nuestro consolador y guía.</p>
+                        </div>
+                    </div>
+
+                    <!-- Module 5: Locked -->
+                    <div class="module-item locked">
+                        <div class="module-status">
+                            <span class="status-icon">🔒</span>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Módulo 5: La Iglesia</h4>
+                            <p class="module-desc">Nuestro rol dentro del cuerpo de Cristo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Lesson Panel -->
+                <div class="course-panel">
+                    <div class="lesson-header">
+                        <h3 class="lesson-title">Lección 3.1: Significado del Bautismo</h3>
+                    </div>
+                    <div class="lesson-content">
+                        <p>El bautismo en agua es un acto de obediencia posterior a la salvación. Simboliza nuestra
+                            identificación con la muerte, sepultura y resurrección de Jesucristo.</p>
+                        <p>Al sumergirnos, declaramos públicamente que nuestra vieja naturaleza ha muerto al pecado, y
+                            al salir del agua, afirmamos que nos levantamos para caminar en una vida nueva guiados por
+                            Su gracia.</p>
+                    </div>
+
+                    <!-- Attached Files -->
+                    <div class="lesson-attachments">
+                        <h4 class="attachments-title">Material de apoyo</h4>
+                        <div class="attachment-item">
+                            <div class="attachment-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                            </div>
+                            <span class="attachment-name">Lectura Complementaria.pdf</span>
+                            <a href="#" class="btn-outline-gold btn-small">Descargar</a>
+                        </div>
+                    </div>
+
+                    <!-- Assignment Section -->
+                    <div class="lesson-assignment">
+                        <h4 class="assignment-title">Tu Tarea</h4>
+                        <p class="assignment-desc">Reflexiona: ¿Qué significa para ti dejar atrás tu vieja naturaleza?
+                            Escribe tus pensamientos o sube un documento.</p>
+
+                        <textarea class="assignment-textarea" rows="4"
+                            placeholder="Escribe tu reflexión aquí..."></textarea>
+
+                        <div class="upload-wrapper">
+                            <label class="upload-label" for="assignment-file">
+                                <span class="upload-icon">📎</span>
+                                Adjuntar archivo
+                            </label>
+                            <input type="file" id="assignment-file" class="upload-input">
+                            <span class="upload-hint">Formatos soportados: PDF, DOCX. Máx 5MB.</span>
+                        </div>
+
+                        <button class="btn-primary-solid btn-submit-task">Enviar Tarea</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section class="section social-media" id="redes" style="background-color: var(--bg-main);">
+        <div class="container text-center">
+            <h2 class="section-title">Nuestras Redes</h2>
+            <p class="section-subtitle">Síguenos en nuestras plataformas para no perderte de nada.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-top: 3rem;">
+                <!-- Instagram -->
+                <div style="background-color: var(--color-medium-green); border: 1px solid rgba(201, 168, 76, 0.3); border-radius: 8px; padding: 15px; height: 500px; display: flex; flex-direction: column;">
+                    <iframe src="https://www.instagram.com/legadodebendicion/embed" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" style="border-radius: 4px; flex: 1;"></iframe>
+                </div>
+
+                <!-- Facebook -->
+                <div style="background-color: var(--color-medium-green); border: 1px solid rgba(201, 168, 76, 0.3); border-radius: 8px; padding: 15px; height: 500px; display: flex; justify-content: center; overflow: hidden;">
+                    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FLegadodebendicion&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" width="100%" height="100%" style="border:none;overflow:hidden; border-radius: 4px;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                </div>
+
+                <!-- YouTube -->
+                <div style="background-color: var(--color-medium-green); border: 1px solid rgba(201, 168, 76, 0.3); border-radius: 8px; padding: 15px; height: 500px; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div style="position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" src="https://www.youtube.com/embed/CxqqinXiJcw" title="Último Directo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div style="text-align: left; padding: 0 0.5rem; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+                        <div>
+                            <h3 style="color: var(--color-primary); font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 0.5rem;">Canal Oficial</h3>
+                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.5;">Revive nuestros servicios, estudios bíblicos y enseñanzas en vivo. Suscríbete para recibir notificaciones de nuestras transmisiones.</p>
+                        </div>
+                        <a href="https://www.youtube.com/@legadodebendicion" target="_blank" class="btn-primary-solid" style="text-align: center; margin-top: auto;">Visitar Canal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section contact" id="contacto">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-title">Contáctanos</h2>
+                <p class="section-subtitle">Estamos aquí para escucharte y apoyarte en tu caminar.</p>
+            </div>
+
+            <div class="contact-grid">
+                <!-- Left: Form -->
+                <div class="contact-form-wrapper">
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <input type="text" class="form-input" placeholder="Nombre completo" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-input" placeholder="Correo electrónico" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" class="form-input" placeholder="Teléfono" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-input form-textarea" rows="5" placeholder="Tu mensaje..."
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary-solid btn-full">Enviar Mensaje</button>
+                    </form>
+                </div>
+
+                <!-- Right: Contact Info -->
+                <div class="contact-info-wrapper">
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-text">
+                                <h4>Visítanos</h4>
+                                <p>Calle de la Bendición 123, Ciudad Central</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-text">
+                                <h4>Llámanos</h4>
+                                <p>+1 (234) 567-8900</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">✉️</div>
+                            <div class="contact-text">
+                                <h4>Escríbenos</h4>
+                                <p>info@legadodebendicion.org</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <h4>Síguenos</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-circle">Ig</a>
+                            <a href="#" class="social-circle">Fb</a>
+                            <a href="#" class="social-circle">Yt</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Placeholder -->
+            <div class="map-wrapper">
+                <div class="map-placeholder"></div>
+                <div class="map-overlay"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-new">
+        <div class="footer-gradient-line"></div>
+        <div class="container footer-grid-new">
+            <div class="footer-brand">
+                <a href="#" class="logo">Legado de Bendición</a>
+                <p class="footer-verse">"Instruye al niño en su camino, y aun cuando fuere viejo no se apartará de él."
+                    <br>— Proverbios 22:6</p>
+            </div>
+
+            <div class="footer-links-new">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#horarios">Horarios</a></li>
+                    <li><a href="#nosotros">Historia</a></li>
+                    <li><a href="#eventos">Eventos</a></li>
+                    <li><a href="#sermones">Recursos</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-social-new">
+                <h4>Conéctate</h4>
+                <div class="social-icons-footer">
+                    <a href="#" class="social-icon">Ig</a>
+                    <a href="#" class="social-icon">Fb</a>
+                    <a href="#" class="social-icon">Yt</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom-new">
+            <div class="container">
+                <p>&copy; 2026 Legado de Bendición. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts (load order matters) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

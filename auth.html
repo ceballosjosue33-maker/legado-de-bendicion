@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso | Legado de Bendición</title>
+    <meta name="description" content="Inicia sesión o regístrate en la plataforma de Legado de Bendición.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="index.html" class="auth-logo">Legado de Bendición</a>
+                <p class="auth-subtitle" id="auth-subtitle">Inicia sesión en tu cuenta</p>
+            </div>
+
+            <!-- Vista 1: Login -->
+            <div id="view-login" class="auth-view active">
+                <form id="form-login" novalidate>
+                    <div class="form-group">
+                        <label for="login-email">Correo Electrónico</label>
+                        <input type="email" id="login-email" class="form-input" placeholder="tu@correo.com" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                    </div>
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="login-remember"> Recordarme
+                        </label>
+                        <a href="#" class="auth-link" id="link-forgot">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <div class="form-message" id="msg-login"></div>
+                    <button type="submit" class="btn-auth-primary" id="btn-login">Ingresar</button>
+                </form>
+                <div class="auth-footer">
+                    <p>¿No tienes cuenta? <a href="#" class="auth-link" id="link-register">Regístrate aquí</a></p>
+                </div>
+            </div>
+
+            <!-- Vista 2: Registro -->
+            <div id="view-register" class="auth-view">
+                <form id="form-register" novalidate>
+                    <div class="form-group">
+                        <label for="reg-nombre">Nombre Completo</label>
+                        <input type="text" id="reg-nombre" class="form-input" placeholder="Juan Pérez" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-telefono">Teléfono <span style="opacity:.6">(Opcional)</span></label>
+                        <input type="tel" id="reg-telefono" class="form-input" placeholder="+1 234 567 8900" autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Correo Electrónico</label>
+                        <input type="email" id="reg-email" class="form-input" placeholder="tu@correo.com" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Contraseña</label>
+                        <input type="password" id="reg-password" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password-confirm">Confirmar Contraseña</label>
+                        <input type="password" id="reg-password-confirm" class="form-input" placeholder="Repite la contraseña" required minlength="6" autocomplete="new-password">
+                    </div>
+                    <div class="form-message" id="msg-register"></div>
+                    <button type="submit" class="btn-auth-primary" id="btn-register">Crear Cuenta</button>
+                </form>
+                <div class="auth-footer">
+                    <p>¿Ya tienes cuenta? <a href="#" class="auth-link" id="link-back-login">Inicia sesión</a></p>
+                </div>
+            </div>
+
+            <!-- Vista 3: Recuperar contraseña -->
+            <div id="view-recover" class="auth-view">
+                <p class="recover-info">Ingresa tu correo y te enviaremos un enlace seguro para restablecer tu contraseña.</p>
+                <form id="form-recover" novalidate>
+                    <div class="form-group">
+                        <label for="recover-email">Correo Electrónico</label>
+                        <input type="email" id="recover-email" class="form-input" placeholder="tu@correo.com" required autocomplete="email">
+                    </div>
+                    <div class="form-message" id="msg-recover"></div>
+                    <button type="submit" class="btn-auth-primary" id="btn-recover">Enviar Enlace</button>
+                </form>
+                <div class="auth-footer">
+                    <p><a href="#" class="auth-link" id="link-back-login2">← Volver al inicio de sesión</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

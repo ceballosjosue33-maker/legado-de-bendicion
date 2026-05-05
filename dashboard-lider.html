@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Líder | Legado de Bendición</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="dashboard-lider.css">
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">Legado de Bendición</h2>
+                <p class="sidebar-subtitle">Panel de Líder</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-target="view-resumen">
+                    <span class="nav-icon">📊</span>
+                    Resumen del Grupo
+                </button>
+                <button class="nav-item" data-target="view-disciples">
+                    <span class="nav-icon">👥</span>
+                    Mis Discípulos
+                </button>
+                <button class="nav-item" data-target="view-course">
+                    <span class="nav-icon">📖</span>
+                    Curso Bíblico
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- HEADER -->
+            <header class="top-header">
+                <h1 id="page-title" class="page-title">Resumen del Grupo</h1>
+                <div class="user-profile">
+                    <div class="avatar-placeholder" id="user-avatar">L</div>
+                    <span id="user-name">Líder</span>
+                </div>
+            </header>
+
+            <!-- VIEW: RESUMEN -->
+            <section id="view-resumen" class="view-section active">
+                <!-- KPIs -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">Mis Discípulos</div>
+                        <div class="kpi-value" id="kpi-mis-discipulos">0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Progreso del Grupo</div>
+                        <div class="kpi-value" id="kpi-progreso-grupo">0%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Asistencia Promedio</div>
+                        <div class="kpi-value" id="kpi-asistencia-grupo">0%</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Progreso Individual del Curso</h3>
+                        <canvas id="chartBarProgress"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Asistencia Semanal del Grupo</h3>
+                        <canvas id="chartLineAttendance"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: MIS DISCÍPULOS -->
+            <section id="view-disciples" class="view-section">
+                <div class="flex-between mb-2">
+                    <h3 class="section-heading">Gestión de Discípulos</h3>
+                    <button class="btn-primary" id="btn-open-add">Agregar Discípulo</button>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Foto</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Progreso</th>
+                                    <th>Último Acceso</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-disciples-body">
+                                <tr><td colspan="6" class="text-center">Cargando discípulos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: CURSO BÍBLICO (Read Only) -->
+            <section id="view-course" class="view-section">
+                <div class="flex-between mb-2">
+                    <h3 class="section-heading">Módulos del Curso</h3>
+                    <span class="text-secondary">Vista de Lectura</span>
+                </div>
+                
+                <div class="modules-grid" id="modules-container">
+                    <p class="text-secondary text-center w-100">Cargando módulos...</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL: ADD DISCIPLE -->
+    <div class="modal" id="modal-add-disciple">
+        <div class="modal-content modal-lg">
+            <h3 class="modal-title">Agregar Nuevo Discípulo a tu Grupo</h3>
+            <p class="text-secondary mb-2">Busca miembros de la iglesia que aún no tienen un líder asignado.</p>
+            
+            <div class="form-group flex-between gap-1">
+                <input type="text" id="search-unassigned" class="form-input" placeholder="Buscar por nombre...">
+                <button class="btn-primary" id="btn-search-unassigned">Buscar</button>
+            </div>
+            
+            <div class="unassigned-list mt-2" id="unassigned-container">
+                <!-- Se llenará dinámicamente -->
+            </div>
+            
+            <div class="modal-actions mt-3">
+                <button class="btn-secondary" id="btn-close-add">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: PROFILE & NOTES -->
+    <div class="modal" id="modal-profile">
+        <div class="modal-content modal-lg">
+            <div class="flex-between mb-2">
+                <h3 class="modal-title m-0">Perfil del Discípulo</h3>
+                <span class="text-gold" id="profile-name">Nombre</span>
+            </div>
+            
+            <div class="profile-grid">
+                <!-- Info & Progress -->
+                <div class="profile-section">
+                    <h4 class="text-gold mb-1">Módulos Leídos</h4>
+                    <ul class="module-list" id="profile-modules">
+                        <!-- Llenado dinámico -->
+                    </ul>
+                </div>
+                
+                <!-- Private Notes -->
+                <div class="profile-section">
+                    <h4 class="text-gold mb-1">Notas Pastorales (Privadas)</h4>
+                    <p class="text-secondary" style="font-size:0.8rem; margin-bottom:1rem;">Solo tú y el Pastor pueden ver estas notas.</p>
+                    <textarea class="form-input form-textarea" id="profile-notes" rows="6" placeholder="Escribe observaciones, peticiones de oración, o progreso espiritual..."></textarea>
+                    <button class="btn-primary-solid w-100 mt-2" id="btn-save-notes">Guardar Notas</button>
+                </div>
+            </div>
+            
+            <div class="modal-actions mt-3">
+                <button class="btn-secondary" id="btn-close-profile">Cerrar Perfil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="config.js"></script>
+    <script src="dashboard-lider.js"></script>
+</body>
+</html>

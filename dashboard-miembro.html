@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portal | Legado de Bendición</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="dashboard-miembro.css">
+</head>
+<body>
+
+    <!-- TOP NAVBAR -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <h2 class="nav-logo">Legado de Bendición</h2>
+            <div class="nav-links">
+                <button class="nav-btn active" data-target="view-dashboard">Mi Portal</button>
+                <button class="nav-btn" data-target="view-profile">Mi Perfil</button>
+                <button class="nav-btn btn-logout" id="btn-logout">Salir</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER (One Column) -->
+    <main class="main-container">
+
+        <!-- VIEW: DASHBOARD (Resumen + Curso) -->
+        <div id="view-dashboard" class="view-section active">
+            
+            <!-- 1. Mi Resumen -->
+            <section class="summary-section">
+                <h1 class="greeting">¡Bendiciones, <span id="user-firstname" class="text-gold">Hermano</span>!</h1>
+                <p class="greeting-subtitle">Este es tu espacio personal para crecer en tu caminar de fe.</p>
+                
+                <!-- Progreso -->
+                <div class="progress-card">
+                    <div class="flex-between mb-1">
+                        <h3 class="progress-title">Progreso del Curso Bíblico</h3>
+                        <span class="progress-percent text-gold" id="course-percent">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="course-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+                
+                <!-- Cards KPI -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon">📚</div>
+                        <div class="kpi-info">
+                            <h4>Módulos Completados</h4>
+                            <span class="kpi-value" id="kpi-completed">0</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon">📖</div>
+                        <div class="kpi-info">
+                            <h4>Módulos Totales</h4>
+                            <span class="kpi-value" id="kpi-total">0</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card leader-card">
+                        <div class="leader-avatar" id="leader-avatar"></div>
+                        <div class="kpi-info">
+                            <h4>Mi Líder Asignado</h4>
+                            <span class="kpi-value text-small" id="leader-name">Sin asignar</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Curso Bíblico -->
+            <section class="course-section mt-4">
+                <h2 class="section-title">Tu Curso Bíblico</h2>
+                <p class="text-secondary mb-3">Avanza módulo por módulo para edificar tu vida espiritual.</p>
+                
+                <div class="modules-container" id="modules-list">
+                    <p class="text-center text-secondary">Cargando módulos...</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW: MI PERFIL -->
+        <div id="view-profile" class="view-section">
+            <h2 class="section-title mb-3">Configuración de Perfil</h2>
+            
+            <div class="profile-card">
+                
+                <!-- Avatar Upload -->
+                <div class="avatar-section">
+                    <div class="avatar-large" id="profile-avatar-large">U</div>
+                    <div class="avatar-upload">
+                        <label for="upload-avatar" class="btn-outline-gold btn-small">Cambiar Foto</label>
+                        <input type="file" id="upload-avatar" accept="image/png, image/jpeg" style="display: none;">
+                        <span class="text-secondary text-micro d-block mt-1">Sube una imagen (PNG o JPG). Máx 2MB.</span>
+                    </div>
+                </div>
+                
+                <hr class="divider">
+                
+                <!-- Info Form -->
+                <form id="form-profile">
+                    <h3 class="form-title">Información Personal</h3>
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" class="form-input" id="prof-nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico (No modificable)</label>
+                        <input type="email" class="form-input" id="prof-email" readonly disabled style="opacity: 0.6;">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" class="form-input" id="prof-telefono">
+                    </div>
+                    <button type="submit" class="btn-primary-solid w-100 mt-1" id="btn-save-profile">Guardar Cambios</button>
+                    <div id="msg-profile" class="form-message mt-1"></div>
+                </form>
+                
+                <hr class="divider">
+                
+                <!-- Password Form -->
+                <form id="form-password">
+                    <h3 class="form-title">Seguridad</h3>
+                    <div class="form-group">
+                        <label>Nueva Contraseña</label>
+                        <input type="password" class="form-input" id="prof-pass1" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar Nueva Contraseña</label>
+                        <input type="password" class="form-input" id="prof-pass2" minlength="6" required>
+                    </div>
+                    <button type="submit" class="btn-secondary w-100 mt-1" id="btn-save-password">Actualizar Contraseña</button>
+                    <div id="msg-password" class="form-message mt-1"></div>
+                </form>
+                
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: LECTURA DE MÓDULO -->
+    <div class="modal" id="modal-lesson">
+        <div class="modal-content">
+            <h2 class="lesson-title" id="lesson-title">Título del Módulo</h2>
+            
+            <div class="lesson-text" id="lesson-text">
+                Contenido...
+            </div>
+            
+            <!-- Archivo PDF -->
+            <div class="lesson-attachment" id="lesson-attachment-box" style="display: none;">
+                <div class="flex-align-center gap-1">
+                    <span class="icon-pdf">📄</span>
+                    <div>
+                        <strong class="d-block text-white">Material de Estudio</strong>
+                        <span class="text-secondary text-micro">Documento PDF Adjunto</span>
+                    </div>
+                </div>
+                <a href="#" target="_blank" class="btn-outline-gold btn-small" id="lesson-download-btn">Descargar PDF</a>
+            </div>
+            
+            <div class="modal-actions mt-4 flex-between">
+                <button class="btn-secondary" id="btn-close-lesson">Volver</button>
+                <button class="btn-primary-solid" id="btn-mark-read">Marcar como Leído ✓</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="dashboard-miembro.js"></script>
+</body>
+</html>

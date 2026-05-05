@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Admin | Legado de Bendición</title>
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #0A0F0A; color: #F5F0E8; padding: 2rem; display: flex; justify-content: center; }
+        .card { background-color: #1A3A1A; padding: 2rem; border: 1px solid #C9A84C; border-radius: 8px; width: 100%; max-width: 500px; }
+        h2 { color: #C9A84C; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 2rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #8A9E8A; }
+        input { width: 100%; padding: 0.8rem; background-color: #0F1F0F; border: 1px solid rgba(201,168,76,0.3); color: white; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 1rem; background-color: #C9A84C; color: #0A0F0A; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 1rem; }
+        button:hover { background-color: #E8C97A; }
+        #message { margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none; text-align: center; }
+        .success { background-color: rgba(40,167,69,0.2); color: #8ade8a; border: 1px solid #8ade8a; }
+        .error { background-color: rgba(220,53,69,0.2); color: #ff6b6b; border: 1px solid #ff6b6b; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Crear Cuenta de Pastor</h2>
+        <p style="color:#8A9E8A; font-size:0.9rem; text-align:center; margin-bottom:1.5rem;">
+            Esta herramienta interna conectará con tu Supabase para forzar la creación de la cuenta de Administrador Supremo.
+        </p>
+
+        <div class="form-group">
+            <label>Supabase URL</label>
+            <input type="text" id="supa-url" placeholder="https://xxxx.supabase.co" required>
+        </div>
+        <div class="form-group">
+            <label>Supabase Anon Key</label>
+            <input type="password" id="supa-key" placeholder="eyJhbGciOiJIUz..." required>
+        </div>
+        
+        <hr style="border:none; border-top:1px solid rgba(201,168,76,0.2); margin:1.5rem 0;">
+
+        <div class="form-group">
+            <label>Nombre del Pastor</label>
+            <input type="text" id="admin-name" value="Pastor Principal" required>
+        </div>
+        <div class="form-group">
+            <label>Correo Electrónico (Usuario)</label>
+            <input type="email" id="admin-email" value="pastor@legadodebendicion.com" required>
+        </div>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="text" id="admin-pass" value="PastorAdmin2026!" required>
+        </div>
+
+        <button id="btn-crear">Crear Pastor Automáticamente</button>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('btn-crear').addEventListener('click', async () => {
+            const url = document.getElementById('supa-url').value.trim();
+            const key = document.getElementById('supa-key').value.trim();
+            const name = document.getElementById('admin-name').value.trim();
+            const email = document.getElementById('admin-email').value.trim();
+            const password = document.getElementById('admin-pass').value.trim();
+            const msgBox = document.getElementById('message');
+            const btn = document.getElementById('btn-crear');
+
+            if(!url || !key || !email || !password) {
+                msgBox.style.display = 'block';
+                msgBox.className = 'error';
+                msgBox.textContent = 'Por favor, llena todos los campos.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            msgBox.style.display = 'none';
+
+            try {
+                // 1. Inicializar Supabase temporal
+                const supabase = window.supabase.createClient(url, key);
+
+                // 2. Registrar el usuario en Auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+
+                if (authError) throw authError;
+
+                const userId = authData.user.id;
+
+                // 3. Forzar el rol a "pastor" en la tabla usuarios (ignora RLS si está bien configurado o usa sesión)
+                // Ojo: Si tienes políticas RLS que impidan actualizar, la propia sesión de creación podría permitirlo 
+                // ya que acabamos de loguearnos, pero si falla sugeriremos el SQL.
+                
+                // Esperar 1 segundo para que el Trigger de Supabase cree la fila en 'usuarios' primero
+                await new Promise(r => setTimeout(r, 1500));
+
+                const { error: updateError } = await supabase
+                    .from('usuarios')
+                    .upsert({ 
+                        id: userId,
+                        email: email,
+                        nombre: name, 
+                        rol: 'pastor',
+                        activo: true
+                    });
+
+                if (updateError) {
+                    throw new Error("El usuario se creó en Auth, pero no se pudo ascender a Pastor debido al RLS de tu base de datos. Ve a tu tabla 'usuarios' y cambia su rol manualmente a 'pastor'. Error: " + updateError.message);
+                }
+
+                // Éxito total
+                msgBox.style.display = 'block';
+                msgBox.className = 'success';
+                msgBox.innerHTML = `<strong>¡Misión Cumplida!</strong><br><br>Cuenta Creada:<br>Email: ${email}<br>Pass: ${password}<br><br>Ve a <em>auth.html</em> para iniciar sesión.`;
+
+            } catch (err) {
+                msgBox.style.display = 'block';
+                msgBox.className = 'error';
+                msgBox.textContent = err.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Crear Pastor Automáticamente';
+            }
+        });
+    </script>
+</body>
+</html>
