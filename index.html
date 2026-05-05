@@ -1459,8 +1459,8 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="logo" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
-                <img src="https://scontent.fclo1-4.fna.fbcdn.net/v/t39.30808-6/486432710_931766482503686_3903717456267471297_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=90jPxAqwdXoQ7kNvwH3M0Yr&_nc_oc=AdpAVk7ivquIhFz0g65Uz437PJ6YuyjFIb4TlWmJ76EqiXmDBvWhXVsrAHziTcvqgfgJJdi3ABabnclm-kPJCG5m&_nc_zt=23&_nc_ht=scontent.fclo1-4.fna&_nc_gid=GwZoJS7PzoGJtfoCLfV56Q&_nc_ss=7b2a8&oh=00_Af6HrvQGFpD6yeTzozSFHAG_uJnekNPrcmu2fPBgcjljaw&oe=69FF3CB6" alt="LDB Logo" style="height: 42px; width: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-primary);">
-                <span>Legado de Bendición</span>
+                <img data-editable-img="navbar-logo" src="https://scontent.fclo1-4.fna.fbcdn.net/v/t39.30808-6/486432710_931766482503686_3903717456267471297_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=90jPxAqwdXoQ7kNvwH3M0Yr&_nc_oc=AdpAVk7ivquIhFz0g65Uz437PJ6YuyjFIb4TlWmJ76EqiXmDBvWhXVsrAHziTcvqgfgJJdi3ABabnclm-kPJCG5m&_nc_zt=23&_nc_ht=scontent.fclo1-4.fna&_nc_gid=GwZoJS7PzoGJtfoCLfV56Q&_nc_ss=7b2a8&oh=00_Af6HrvQGFpD6yeTzozSFHAG_uJnekNPrcmu2fPBgcjljaw&oe=69FF3CB6" alt="LDB Logo" style="height: 42px; width: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-primary);">
+                <span data-editable="navbar-nombre">Legado de Bendición</span>
             </a>
 
             <ul class="nav-links">
@@ -1474,8 +1474,8 @@
 
 
             <div class="nav-auth-buttons" style="display: flex; gap: 1rem;">
-                <a href="auth.html" class="btn-outline-gold" style="padding: 0.5rem 1.2rem; font-size: 0.95rem; border-radius: 25px;">Iniciar sesión</a>
-                <a href="auth.html" class="btn-primary-solid" style="padding: 0.5rem 1.2rem; font-size: 0.95rem; border-radius: 25px;">Registrarse</a>
+                <a href="auth.html" class="btn-outline-gold" style="padding: 0.5rem 1.2rem; font-size: 0.95rem; border-radius: 25px;" data-editable="navbar-cta1">Iniciar sesión</a>
+                <a href="auth.html" class="btn-primary-solid" style="padding: 0.5rem 1.2rem; font-size: 0.95rem; border-radius: 25px;" data-editable="navbar-cta">Registrarse</a>
             </div>
 
 
@@ -1490,16 +1490,16 @@
 
     <!-- Hero Section -->
     <header class="hero" id="inicio">
-        <div class="hero-bg-logo"></div>
+        <img data-editable-img="hero-fondo" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2;"><div class="hero-bg-logo"></div>
         <div class="hero-bg-cross"></div>
         <div class="hero-glow"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1 class="title">Legado de <span class="text-gold-italic">Bendición</span></h1>
-            <p class="description">Un lugar donde la fe transforma vidas</p>
+            <h1 class="title"><span data-editable="hero-titulo1">Legado de</span> <br> <span class="text-gold-italic" data-editable="hero-titulo2">Bendición</span></h1>
+            <p class="description" data-editable="hero-subtitulo">Un lugar donde la fe transforma vidas</p>
             <div class="hero-actions">
-                <a href="#unete" class="btn-primary-solid">Únete a nosotros</a>
-                <a href="#horarios" class="btn-outline-gold">Ver horarios</a>
+                <a href="#unete" class="btn-primary-solid" data-editable="hero-boton1">Únete a nosotros</a>
+                <a href="#horarios" class="btn-outline-gold" data-editable="hero-boton2">Ver horarios</a>
             </div>
         </div>
     </header>
@@ -1510,28 +1510,26 @@
             <div class="history-grid">
                 <!-- Left: Image -->
                 <div class="history-image-wrapper">
-                    <img src="assets/history-bg.png" alt="Nuestra Congregación" class="history-img">
+                    <img src="assets/history-bg.png" alt="Nuestra Congregación" class="history-img" data-editable-img="nosotros-foto">
                     <div class="history-image-overlay"></div>
                 </div>
 
                 <!-- Right: Text -->
                 <div class="history-content">
-                    <h2 class="section-title text-white">Nuestra Historia</h2>
-                    <p class="history-desc">Todo comenzó con un pequeño grupo de creyentes que soñaban con establecer un
+                    <h2 class="section-title text-white" data-editable="nosotros-titulo">Nuestra Historia</h2>
+                    <p class="history-desc" data-editable="nosotros-historia">Todo comenzó con un pequeño grupo de creyentes que soñaban con establecer un
                         refugio de amor y restauración. A través de los años, hemos visto la mano de Dios obrar
                         poderosamente, transformando vidas y levantando una comunidad apasionada por Su presencia y Su
                         propósito.</p>
 
                     <blockquote class="history-quote">
-                        <span class="quote-title">Nuestra Misión</span>
-                        Edificar una familia espiritual fundamentada en el amor de Cristo, donde cada persona es
-                        equipada para vivir en victoria.
+                        <span class="quote-title" data-editable="nosotros-mision-titulo">Nuestra Misión</span>
+                        <span data-editable="nosotros-mision-texto">Edificar una familia espiritual fundamentada en el amor de Cristo, donde cada persona es equipada para vivir en victoria.</span>
                     </blockquote>
 
                     <blockquote class="history-quote">
-                        <span class="quote-title">Nuestra Visión</span>
-                        Trascender generaciones, dejando un legado de fe inquebrantable que impacte nuestra ciudad y las
-                        naciones.
+                        <span class="quote-title" data-editable="nosotros-vision-titulo">Nuestra Visión</span>
+                        <span data-editable="nosotros-vision-texto">Trascender generaciones, dejando un legado de fe inquebrantable que impacte nuestra ciudad y las naciones.</span>
                     </blockquote>
                 </div>
             </div>
@@ -1539,16 +1537,16 @@
             <!-- Metrics -->
             <div class="metrics-grid">
                 <div class="metric-item">
-                    <div class="metric-number">15+</div>
-                    <div class="metric-label">Años de ministerio</div>
+                    <div class="metric-number" data-editable="nosotros-metrica1-numero">15+</div>
+                    <div class="metric-label" data-editable="nosotros-metrica1-etiqueta">Años de ministerio</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-number">200+</div>
-                    <div class="metric-label">Familias</div>
+                    <div class="metric-number" data-editable="nosotros-metrica2-numero">200+</div>
+                    <div class="metric-label" data-editable="nosotros-metrica2-etiqueta">Familias</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-number">8</div>
-                    <div class="metric-label">Grupos de vida</div>
+                    <div class="metric-number" data-editable="nosotros-metrica3-numero">8</div>
+                    <div class="metric-label" data-editable="nosotros-metrica3-etiqueta">Grupos de vida</div>
                 </div>
             </div>
         </div>
@@ -1588,7 +1586,7 @@
     <!-- Events Section -->
     <section class="section events" id="eventos">
         <div class="container text-center">
-            <h2 class="section-title">Próximos Eventos</h2>
+            <h2 class="section-title" data-editable="eventos-titulo">Próximos Eventos</h2>
             <p class="section-subtitle">Acompáñanos y sé parte de nuestra comunidad en acción.</p>
 
             <div class="events-grid">
@@ -1945,6 +1943,43 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="script.js"></script>
+
+    <!-- SCRIPT DE CARGA DINÁMICA DEL CONTENIDO -->
+    <script>
+    async function cargarContenido() {
+      try {
+        const { data, error } = await _s
+          .from('contenido_pagina')
+          .select('clave, valor_texto, valor_imagen_url');
+
+        if (error || !data) return;
+
+        data.forEach(({ clave, valor_texto, valor_imagen_url }) => {
+          // Textos
+          if (valor_texto) {
+            document.querySelectorAll(`[data-editable="${clave}"]`)
+              .forEach(el => el.textContent = valor_texto);
+          }
+          // Imágenes e iframes
+          if (valor_imagen_url) {
+            document.querySelectorAll(`[data-editable-img="${clave}"]`)
+              .forEach(el => {
+                if (el.tagName === 'IFRAME') el.src = valor_imagen_url;
+                else el.src = valor_imagen_url;
+              });
+          }
+        });
+      } catch (e) {
+        console.log('Usando contenido por defecto');
+      }
+    }
+    
+    // Cargar contenido despues de Supabase
+    document.addEventListener('DOMContentLoaded', () => {
+        if(typeof _s !== 'undefined') cargarContenido();
+    });
+    </script>
+
 </body>
 
 </html>

@@ -8,9 +8,10 @@ async function run() {
     
     try {
         await client.connect();
-        const sql = fs.readFileSync('update_course.sql', 'utf8');
+        const file = process.argv[2] || 'supabase_schema.sql';
+        const sql = fs.readFileSync(file, 'utf8');
         await client.query(sql);
-        console.log('Course schema updated successfully!');
+        console.log(`Schema ${file} updated successfully!`);
     } catch (err) {
         console.error('Error:', err);
     } finally {

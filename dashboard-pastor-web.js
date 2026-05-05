@@ -1,475 +1,331 @@
 // dashboard-pastor-web.js
-// Editor de Página Web Avanzado
 
-let cmsData = {}; // Guardará { "seccion_campo": { valor_texto, valor_imagen_url } }
-let currentCmsSection = 'navbar';
-let hasUnsavedCmsChanges = false;
+let usuarioActual = null;
+let hasUnsavedChanges = false;
+let currentTab = 'navbar';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Escuchar clics en los tabs (solo cuando estamos en la vista de contenido web)
-    document.getElementById('nav-content')?.addEventListener('click', initCMS);
-    
-    document.querySelectorAll('.cms-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            if (hasUnsavedCmsChanges) {
-                if (!confirm('Tienes cambios sin guardar. ¿Deseas continuar y perder los cambios?')) return;
-            }
-            document.querySelectorAll('.cms-tab').forEach(t => t.classList.remove('active'));
-            e.target.classList.add('active');
-            currentCmsSection = e.target.getAttribute('data-section');
-            renderCMSForm(currentCmsSection);
-        });
-    });
+const FORM_STRUCTURES = {
+    navbar: [
+        { type: 'text', label: 'Nombre de la iglesia', clave: 'navbar-nombre' },
+        { type: 'text', label: 'Texto botón CTA', clave: 'navbar-cta' },
+        { type: 'image', label: 'Logo', clave: 'navbar-logo' }
+    ],
+    hero: [
+        { type: 'text', label: 'Título línea 1', clave: 'hero-titulo1' },
+        { type: 'text', label: 'Título línea 2 dorada', clave: 'hero-titulo2' },
+        { type: 'text', label: 'Subtítulo', clave: 'hero-subtitulo' },
+        { type: 'text', label: 'Botón primario', clave: 'hero-boton1' },
+        { type: 'text', label: 'Botón secundario', clave: 'hero-boton2' },
+        { type: 'text', label: 'Versículo decorativo', clave: 'hero-versiculo' },
+        { type: 'image', label: 'Imagen de fondo', clave: 'hero-fondo' }
+    ],
+    horarios: [
+        { type: 'text', label: 'Título sección', clave: 'horarios-titulo' },
+        ...Array.from({length:4}, (_, i) => [
+            { type: 'title', label: `Culto ${i+1}` },
+            { type: 'text', label: 'Nombre', clave: `horario${i+1}-nombre` },
+            { type: 'text', label: 'Día', clave: `horario${i+1}-dia` },
+            { type: 'text', label: 'Hora', clave: `horario${i+1}-hora` },
+            { type: 'textarea', label: 'Descripción', clave: `horario${i+1}-descripcion` }
+        ]).flat()
+    ],
+    nosotros: [
+        { type: 'text', label: 'Título sección', clave: 'nosotros-titulo' },
+        { type: 'textarea', label: 'Historia', clave: 'nosotros-historia' },
+        { type: 'text', label: 'Título Misión', clave: 'nosotros-mision-titulo' },
+        { type: 'textarea', label: 'Texto Misión', clave: 'nosotros-mision-texto' },
+        { type: 'text', label: 'Título Visión', clave: 'nosotros-vision-titulo' },
+        { type: 'textarea', label: 'Texto Visión', clave: 'nosotros-vision-texto' },
+        { type: 'image', label: 'Foto principal', clave: 'nosotros-foto' },
+        { type: 'title', label: 'Métricas' },
+        { type: 'text', label: 'Número 1', clave: 'nosotros-metrica1-numero' },
+        { type: 'text', label: 'Etiqueta 1', clave: 'nosotros-metrica1-etiqueta' },
+        { type: 'text', label: 'Número 2', clave: 'nosotros-metrica2-numero' },
+        { type: 'text', label: 'Etiqueta 2', clave: 'nosotros-metrica2-etiqueta' },
+        { type: 'text', label: 'Número 3', clave: 'nosotros-metrica3-numero' },
+        { type: 'text', label: 'Etiqueta 3', clave: 'nosotros-metrica3-etiqueta' }
+    ],
+    eventos: [
+        { type: 'text', label: 'Título sección', clave: 'eventos-titulo' },
+        ...Array.from({length:6}, (_, i) => [
+            { type: 'title', label: `Evento ${i+1}` },
+            { type: 'text', label: 'Título', clave: `evento${i+1}-titulo` },
+            { type: 'text', label: 'Día (Número)', clave: `evento${i+1}-fecha-dia` },
+            { type: 'text', label: 'Mes (Nombre corto)', clave: `evento${i+1}-fecha-mes` },
+            { type: 'textarea', label: 'Descripción', clave: `evento${i+1}-descripcion` },
+            { type: 'image', label: 'Imagen', clave: `evento${i+1}-imagen` },
+            { type: 'text', label: 'Link de inscripción', clave: `evento${i+1}-link` }
+        ]).flat()
+    ],
+    sermones: [
+        { type: 'text', label: 'Título sección', clave: 'sermones-titulo' },
+        ...Array.from({length:9}, (_, i) => [
+            { type: 'title', label: `Sermón ${i+1}` },
+            { type: 'text', label: 'Título', clave: `sermon${i+1}-titulo` },
+            { type: 'text', label: 'Predicador', clave: `sermon${i+1}-predicador` },
+            { type: 'text', label: 'Fecha (Ej: 20 May 2025)', clave: `sermon${i+1}-fecha` },
+            { type: 'text', label: 'Categoría', clave: `sermon${i+1}-categoria` },
+            { type: 'text', label: 'URL de Video', clave: `sermon${i+1}-video` }
+        ]).flat()
+    ],
+    contacto: [
+        { type: 'text', label: 'Título sección', clave: 'contacto-titulo' },
+        { type: 'text', label: 'Dirección', clave: 'contacto-direccion' },
+        { type: 'text', label: 'Teléfono', clave: 'contacto-telefono' },
+        { type: 'text', label: 'Email', clave: 'contacto-email' },
+        { type: 'image', label: 'Embed Google Maps URL', clave: 'contacto-mapa' } // iframe src
+    ],
+    footer: [
+        { type: 'text', label: 'Slogan', clave: 'footer-slogan' },
+        { type: 'text', label: 'Copyright', clave: 'footer-copyright' }
+    ]
+};
 
-    // Inyectar estilos para los tabs si no existen
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .cms-tab { background: transparent; color: #8A9E8A; border: none; padding: 15px 20px; text-align: left; font-family: var(--font-body); font-size: 1rem; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; }
-        .cms-tab:hover { background: rgba(201,168,76,0.05); color: #F5F0E8; }
-        .cms-tab.active { background: #1A3A1A; border-left: 4px solid #C9A84C; color: #C9A84C; font-weight: bold; }
-        
-        .cms-field-group { margin-bottom: 25px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; border: 0.5px solid rgba(201,168,76,0.2); }
-        .cms-label { display: block; color: #C9A84C; font-family: var(--font-heading); font-size: 1.2rem; margin-bottom: 10px; }
-        .cms-input { width: 100%; background: #1A3A1A; border: 0.5px solid rgba(201,168,76,0.3); color: #F5F0E8; padding: 12px; border-radius: 6px; font-family: var(--font-body); font-size: 1rem; box-sizing: border-box; }
-        .cms-input:focus { outline: none; border-color: #C9A84C; }
-        
-        .drop-zone { border: 2px dashed rgba(201,168,76,0.5); padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; transition: background 0.3s; background: rgba(0,0,0,0.2); position: relative; overflow: hidden; }
-        .drop-zone:hover { background: rgba(201,168,76,0.1); }
-        .drop-zone img { max-height: 150px; border-radius: 4px; margin-top: 15px; }
-    `;
-    document.head.appendChild(style);
+document.addEventListener('DOMContentLoaded', async () => {
+    const { data: { session } } = await _s.auth.getSession();
+    if (session) usuarioActual = session.user;
 
-    setTimeout(initCMS, 1000);
+    setupTabs();
+    renderAllForms();
+    await cargarEditorContenido();
+    setupMobilePreview();
 });
 
-async function initCMS() {
-    const area = document.getElementById('cms-content-area');
-    if (!area) return;
-    area.innerHTML = '<div class="text-center text-secondary mt-5"><div class="spinner mb-2"></div>Cargando datos del servidor...</div>';
-    
-    try {
-        const { data, error } = await _s.from('contenido_pagina').select('*');
-        if (error) throw error;
-        
-        cmsData = {};
-        (data || []).forEach(row => {
-            cmsData[`${row.seccion}_${row.campo}`] = row;
-        });
-
-        hasUnsavedCmsChanges = false;
-        renderCMSForm(currentCmsSection);
-    } catch (err) {
-        area.innerHTML = `<div class="text-center" style="color:#ff6b6b">Error cargando CMS: ${err.message}</div>`;
-    }
-}
-
-// Helper para obtener el valor guardado
-function getCMSVal(seccion, campo, isImage = false) {
-    const key = `${seccion}_${campo}`;
-    if (!cmsData[key]) return '';
-    return isImage ? (cmsData[key].valor_imagen_url || '') : (cmsData[key].valor_texto || '');
-}
-
-// Generador de formularios dinámico
-function renderCMSForm(section) {
-    const area = document.getElementById('cms-content-area');
-    let html = `<h2 style="color: #C9A84C; font-family: var(--font-heading); font-size: 2.5rem; margin-top: 0; margin-bottom: 2rem; border-bottom: 1px solid rgba(201,168,76,0.2); padding-bottom: 15px;">Editar ${section.charAt(0).toUpperCase() + section.slice(1)}</h2>`;
-    html += `<form id="cms-form" data-section="${section}">`;
-
-    if (section === 'navbar') {
-        html += renderTextInput('Nombre de la Iglesia', 'iglesia_nombre');
-        html += renderTextInput('Texto Botón Principal', 'btn_cta');
-        html += renderImageUpload('Logo de la Iglesia', 'logo');
-        html += `<h3 class="cms-label mt-4">Enlaces del Menú</h3>`;
-        ['inicio', 'horarios', 'nosotros', 'eventos', 'sermones', 'curso', 'contacto'].forEach(link => {
-            html += renderToggle(`Mostrar link: ${link.charAt(0).toUpperCase() + link.slice(1)}`, `show_link_${link}`, 'true');
-        });
-    } 
-    else if (section === 'hero') {
-        html += renderTextInput('Título Línea 1', 'titulo_1');
-        html += renderTextInput('Título Línea 2 (Cursiva Dorada)', 'titulo_2');
-        html += renderTextInput('Subtítulo', 'subtitulo');
-        html += renderTextInput('Texto Botón Primario', 'btn_primario');
-        html += renderTextInput('Texto Botón Secundario', 'btn_secundario');
-        html += renderTextInput('Versículo Decorativo', 'versiculo');
-        html += renderImageUpload('Imagen de Fondo (Reemplaza degradado)', 'fondo');
-    }
-    else if (section === 'horarios') {
-        html += renderTextInput('Título de la Sección', 'titulo');
-        html += renderJSONListEditor('Bloques de Culto', 'lista_cultos', [
-            { key: 'nombre', label: 'Nombre del Culto', type: 'text' },
-            { key: 'dia_hora', label: 'Día y Hora', type: 'text' },
-            { key: 'descripcion', label: 'Descripción corta', type: 'text' },
-            { key: 'icono', label: 'Ícono (cruz/libro/corazon/estrella)', type: 'text' }
-        ], 5);
-    }
-    else if (section === 'nosotros') {
-        html += renderTextInput('Título de la Sección', 'titulo');
-        html += renderTextArea('Historia de la Iglesia', 'historia');
-        html += renderTextInput('Título Misión', 'mision_titulo');
-        html += renderTextArea('Texto Misión', 'mision_texto');
-        html += renderTextInput('Título Visión', 'vision_titulo');
-        html += renderTextArea('Texto Visión', 'vision_texto');
-        html += renderImageUpload('Foto Principal', 'foto_principal');
-        html += renderJSONListEditor('Métricas (Máx 3)', 'metricas', [
-            { key: 'valor', label: 'Número o Valor (ej: 15+)', type: 'text' },
-            { key: 'etiqueta', label: 'Etiqueta (ej: Años)', type: 'text' }
-        ], 3);
-    }
-    else if (section === 'eventos') {
-        html += renderTextInput('Título de la Sección', 'titulo');
-        html += renderJSONListEditor('Lista de Eventos', 'lista_eventos', [
-            { key: 'titulo', label: 'Título del Evento', type: 'text' },
-            { key: 'fecha', label: 'Fecha', type: 'date' },
-            { key: 'descripcion', label: 'Descripción corta', type: 'text' },
-            { key: 'link', label: 'Link de inscripción (opcional)', type: 'text' },
-            { key: 'imagen_url', label: 'URL de Imagen (pegar link)', type: 'text' }
-        ], 6);
-    }
-    else if (section === 'sermones') {
-        html += renderTextInput('Título de la Sección', 'titulo');
-        html += renderJSONListEditor('Lista de Sermones', 'lista_sermones', [
-            { key: 'titulo', label: 'Título del Sermón', type: 'text' },
-            { key: 'predicador', label: 'Predicador', type: 'text' },
-            { key: 'fecha', label: 'Fecha', type: 'date' },
-            { key: 'categoria', label: 'Categoría', type: 'text' },
-            { key: 'video_url', label: 'URL de YouTube', type: 'text' }
-        ], 9);
-    }
-    else if (section === 'contacto') {
-        html += renderTextInput('Título de la Sección', 'titulo');
-        html += renderTextInput('Dirección Física', 'direccion');
-        html += renderTextInput('Número de Teléfono', 'telefono');
-        html += renderTextInput('Email de Contacto', 'email');
-        html += renderTextInput('URL Embed Google Maps', 'mapa_url');
-        html += `<h3 class="cms-label mt-4">Redes Sociales (Dejar vacío para ocultar)</h3>`;
-        ['facebook', 'instagram', 'youtube', 'whatsapp', 'tiktok'].forEach(rs => {
-            html += renderTextInput(`URL de ${rs.charAt(0).toUpperCase() + rs.slice(1)}`, `social_${rs}`);
-        });
-    }
-    else if (section === 'footer') {
-        html += renderTextInput('Versículo Decorativo', 'versiculo');
-        html += renderTextInput('Texto de Copyright', 'copyright');
-        html += renderTextInput('Slogan de la Iglesia', 'slogan');
-    }
-    else if (section === 'estilos') {
-        html += renderColorInput('Color Dorado Principal', 'color_dorado', '#C9A84C');
-        html += renderColorInput('Color de Fondo', 'color_fondo', '#0A0F0A');
-        html += renderColorInput('Color Verde Oscuro', 'color_verde', '#0F1F0F');
-        html += renderColorInput('Color de Texto Secundario', 'color_texto', '#8A9E8A');
-        
-        html += `<div class="cms-field-group">
-            <label class="cms-label">Fuente para Títulos</label>
-            <select class="cms-input cms-value-input" data-campo="fuente_titulos">
-                <option value="Cormorant Garamond">Cormorant Garamond</option>
-                <option value="Playfair Display">Playfair Display</option>
-                <option value="EB Garamond">EB Garamond</option>
-                <option value="Cinzel">Cinzel</option>
-            </select>
-        </div>`;
-        html += `<div class="cms-field-group">
-            <label class="cms-label">Fuente para Cuerpo de Texto</label>
-            <select class="cms-input cms-value-input" data-campo="fuente_cuerpo">
-                <option value="Outfit">Outfit</option>
-                <option value="Inter">Inter</option>
-                <option value="Nunito">Nunito</option>
-            </select>
-        </div>`;
-    }
-
-    html += `
-        <div style="position: sticky; bottom: 0; background: #111A11; padding: 20px 0; border-top: 1px solid rgba(201,168,76,0.2); margin-top: 40px; display: flex; justify-content: flex-end; z-index: 10;">
-            <button type="submit" class="btn-primary" style="font-size: 1.1rem; padding: 12px 30px;" id="btn-save-cms">💾 Guardar Cambios</button>
-        </div>
-    </form>`;
-
-    area.innerHTML = html;
-
-    // Set values
-    if (section === 'estilos') {
-        const t = document.querySelector('[data-campo="fuente_titulos"]');
-        if(t) t.value = getCMSVal('estilos', 'fuente_titulos') || 'Cormorant Garamond';
-        const c = document.querySelector('[data-campo="fuente_cuerpo"]');
-        if(c) c.value = getCMSVal('estilos', 'fuente_cuerpo') || 'Outfit';
-    }
-
-    // Set change listener for unsaved warning
-    document.getElementById('cms-form').addEventListener('input', () => { hasUnsavedCmsChanges = true; sendLivePreview(); });
-    
-    // File uploads logic
-    setupDragAndDrop(section);
-
-    // Dynamic Lists logic
-    setupJSONLists(section);
-    sendLivePreview();
-
-    // Submit logic
-    document.getElementById('cms-form').addEventListener('submit', handleCMSSubmit);
-}
-
-function renderTextInput(label, campo) {
-    const val = getCMSVal(currentCmsSection, campo).replace(/"/g, '&quot;');
-    return `<div class="cms-field-group">
-        <label class="cms-label">${label}</label>
-        <input type="text" class="cms-input cms-value-input" data-campo="${campo}" value="${val}">
-    </div>`;
-}
-
-function renderColorInput(label, campo, def) {
-    const val = getCMSVal(currentCmsSection, campo) || def;
-    return `<div class="cms-field-group" style="display:flex; align-items:center; gap: 15px;">
-        <label class="cms-label" style="margin:0;">${label}</label>
-        <input type="color" class="cms-value-input" data-campo="${campo}" value="${val}" style="width:50px;height:40px;cursor:pointer;border:none;background:transparent;">
-    </div>`;
-}
-
-function renderTextArea(label, campo) {
-    const val = getCMSVal(currentCmsSection, campo);
-    return `<div class="cms-field-group">
-        <label class="cms-label">${label}</label>
-        <textarea class="cms-input cms-value-input" data-campo="${campo}" rows="4">${val}</textarea>
-    </div>`;
-}
-
-function renderToggle(label, campo, defVal = 'false') {
-    const val = getCMSVal(currentCmsSection, campo) || defVal;
-    const isChecked = val === 'true';
-    return `<div class="cms-field-group" style="display:flex; align-items:center; gap:10px; padding: 10px 20px;">
-        <input type="checkbox" class="cms-value-input" data-campo="${campo}" ${isChecked ? 'checked' : ''} style="width:20px;height:20px;accent-color:#C9A84C;">
-        <label class="cms-label" style="margin:0;">${label}</label>
-    </div>`;
-}
-
-function renderImageUpload(label, campo) {
-    const url = getCMSVal(currentCmsSection, campo, true);
-    return `<div class="cms-field-group">
-        <label class="cms-label">${label}</label>
-        <div class="drop-zone" id="drop-${campo}" data-campo="${campo}">
-            <div style="font-size:2rem;color:#C9A84C;margin-bottom:10px;">☁️</div>
-            <div style="color:#F5F0E8;">Arrastra tu imagen aquí o haz clic para seleccionar</div>
-            <input type="file" id="file-${campo}" accept="image/*" style="display:none;">
-            <div id="preview-${campo}">
-                ${url ? `<img src="${url}">` : ''}
-            </div>
-            <!-- guardamos url actual en input oculto -->
-            <input type="hidden" class="cms-image-url-input" data-campo="${campo}" value="${url}">
-        </div>
-    </div>`;
-}
-
-function renderJSONListEditor(label, campo, template, maxItems) {
-    const jsonStr = getCMSVal(currentCmsSection, campo) || '[]';
-    // Se dibujará vacío aquí y JS lo poblará
-    return `<div class="cms-field-group json-list-group" data-campo="${campo}" data-template='${JSON.stringify(template)}' data-max="${maxItems}">
-        <label class="cms-label flex-between">${label} <span class="text-secondary text-small">(Máx ${maxItems})</span></label>
-        <div class="json-list-container" id="list-${campo}"></div>
-        <button type="button" class="btn-outline-gold btn-small mt-2 btn-add-json" data-campo="${campo}">+ Agregar Ítem</button>
-        <input type="hidden" class="cms-value-input" data-campo="${campo}" value='${jsonStr}'>
-    </div>`;
-}
-
-function setupDragAndDrop(section) {
-    document.querySelectorAll('.drop-zone').forEach(zone => {
-        const fileInput = zone.querySelector('input[type="file"]');
-        const preview = zone.querySelector('div[id^="preview-"]');
-        
-        zone.addEventListener('click', () => fileInput.click());
-        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.style.background = 'rgba(201,168,76,0.2)'; });
-        zone.addEventListener('dragleave', (e) => { e.preventDefault(); zone.style.background = 'rgba(0,0,0,0.2)'; });
-        zone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            zone.style.background = 'rgba(0,0,0,0.2)';
-            if (e.dataTransfer.files.length) {
-                fileInput.files = e.dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change'));
+function setupTabs() {
+    const tabs = document.querySelectorAll('.cms-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            if (hasUnsavedChanges) {
+                if (!confirm("Tienes cambios sin guardar ¿deseas continuar?")) return;
             }
-        });
-
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    preview.innerHTML = `<img src="${e.target.result}"> <p class="text-gold text-micro mt-1">Pendiente por guardar...</p>`;
-                    const urlInput = zone.querySelector('.cms-image-url-input');
-                    if (urlInput) urlInput.value = e.target.result; // Use base64 for live preview
-                    sendLivePreview();
-                }
-                reader.readAsDataURL(fileInput.files[0]);
-                hasUnsavedCmsChanges = true;
-            }
-        });
-    });
-}
-
-function setupJSONLists(section) {
-    document.querySelectorAll('.json-list-group').forEach(group => {
-        const campo = group.getAttribute('data-campo');
-        const template = JSON.parse(group.getAttribute('data-template'));
-        const max = parseInt(group.getAttribute('data-max'));
-        const container = document.getElementById(`list-${campo}`);
-        const hiddenInput = group.querySelector('.cms-value-input');
-        const btnAdd = group.querySelector('.btn-add-json');
-
-        let items = [];
-        try { items = JSON.parse(hiddenInput.value); } catch(e){}
-
-        const renderItems = () => {
-            container.innerHTML = '';
-            items.forEach((item, idx) => {
-                const box = document.createElement('div');
-                box.style.cssText = 'background:rgba(255,255,255,0.02); border:1px solid var(--border-color); padding:15px; border-radius:6px; margin-bottom:15px; position:relative;';
-                box.innerHTML = `<button type="button" style="position:absolute;top:10px;right:10px;background:#ff6b6b;color:#fff;border:none;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:0.8rem;" onclick="removeJSONItem('${campo}', ${idx})">✕ Eliminar</button>`;
-                
-                template.forEach(t => {
-                    const id = `item_${campo}_${idx}_${t.key}`;
-                    box.innerHTML += `<div style="margin-bottom:10px;"><label style="display:block;color:#8A9E8A;font-size:0.85rem;margin-bottom:5px;">${t.label}</label>
-                    <input type="${t.type}" id="${id}" value="${(item[t.key]||'').replace(/"/g, '&quot;')}" style="width:100%;padding:8px;background:#1A3A1A;border:1px solid rgba(201,168,76,0.3);color:#fff;border-radius:4px;"></div>`;
-                });
-                container.appendChild(box);
-
-                // bind changes
-                template.forEach(t => {
-                    document.getElementById(`item_${campo}_${idx}_${t.key}`).addEventListener('input', (e) => {
-                        items[idx][t.key] = e.target.value;
-                        hiddenInput.value = JSON.stringify(items); hasUnsavedCmsChanges = true; sendLivePreview();
-                    });
-                });
-            });
-            btnAdd.style.display = items.length >= max ? 'none' : 'inline-block';
-        };
-
-        window.removeJSONItem = (c, i) => {
-            if(c !== campo) return;
-            items.splice(i, 1);
-            hiddenInput.value = JSON.stringify(items); hasUnsavedCmsChanges = true; sendLivePreview();
-            renderItems();
-        };
-
-        btnAdd.addEventListener('click', () => {
-            items.push({});
-            hiddenInput.value = JSON.stringify(items); hasUnsavedCmsChanges = true; sendLivePreview();
-            renderItems();
-        });
-
-        renderItems();
-    });
-}
-
-async function handleCMSSubmit(e) {
-    e.preventDefault();
-    const btn = document.getElementById('btn-save-cms');
-    btn.disabled = true;
-    btn.textContent = 'Subiendo y Guardando...';
-
-    const section = e.target.getAttribute('data-section');
-    const { data: { session } } = await _s.auth.getSession();
-    const userId = session?.user?.id;
-
-    try {
-        // 1. Upload new files if any
-        const dropZones = e.target.querySelectorAll('.drop-zone');
-        for (let zone of dropZones) {
-            const campo = zone.getAttribute('data-campo');
-            const fileInput = zone.querySelector('input[type="file"]');
-            const urlInput = zone.querySelector('.cms-image-url-input');
-
-            if (fileInput.files && fileInput.files[0]) {
-                const file = fileInput.files[0];
-                const path = `cms/${section}_${campo}_${Date.now()}_${file.name}`;
-                const { error: upErr } = await _s.storage.from('imagenes-pagina').upload(path, file, { upsert: true });
-                if (upErr) throw upErr;
-                const { data: { publicUrl } } = _s.storage.from('imagenes-pagina').getPublicUrl(path);
-                urlInput.value = publicUrl;
-            }
-        }
-
-        // 2. Collect all fields
-        const payloads = [];
-        e.target.querySelectorAll('.cms-value-input').forEach(input => {
-            const campo = input.getAttribute('data-campo');
-            const isCheckbox = input.type === 'checkbox';
-            const val = isCheckbox ? (input.checked ? 'true' : 'false') : input.value;
             
-            payloads.push({
-                seccion: section,
-                campo: campo,
-                valor_texto: val,
-                actualizado_por: userId,
-                updated_at: new Date().toISOString()
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                t.style.background = 'transparent';
+                t.style.borderBottom = '2px solid transparent';
+                t.style.color = '#8A9E8A';
+                t.style.fontWeight = 'normal';
             });
+            
+            const btn = e.target;
+            btn.classList.add('active');
+            btn.style.background = '#1A3A1A';
+            btn.style.borderBottom = '2px solid var(--color-primary)';
+            btn.style.color = '#C9A84C';
+            btn.style.fontWeight = 'bold';
+
+            currentTab = btn.getAttribute('data-section');
+            showForm(currentTab);
+        });
+    });
+}
+
+function renderAllForms() {
+    const area = document.getElementById('cms-forms-area');
+    area.innerHTML = '';
+
+    Object.keys(FORM_STRUCTURES).forEach(section => {
+        const formDiv = document.createElement('div');
+        formDiv.id = `form-${section}`;
+        formDiv.style.display = section === currentTab ? 'block' : 'none';
+
+        let html = `<h2 style="font-family: var(--font-heading); font-size: 1.8rem; color: #C9A84C; margin-bottom: 1.5rem;">Editar ${section.charAt(0).toUpperCase() + section.slice(1)}</h2>`;
+        html += `<form data-section="${section}" onsubmit="guardarSeccion(event, '${section}')">`;
+
+        FORM_STRUCTURES[section].forEach(field => {
+            if (field.type === 'title') {
+                html += `<h4 style="color:#C9A84C; margin-top:2rem; margin-bottom:0.5rem; font-family:var(--font-heading); border-bottom:0.5px solid rgba(201,168,76,0.3); padding-bottom:5px;">${field.label}</h4>`;
+            } else if (field.type === 'text') {
+                html += `
+                <div style="margin-bottom: 1.2rem;">
+                    <label style="display:block; color:#8A9E8A; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px;">${field.label}</label>
+                    <input type="text" data-input="${field.clave}" style="width:100%; background:#1A3A1A; border:0.5px solid rgba(201,168,76,0.3); color:#F5F0E8; padding:0.75rem; font-family:var(--font-body); border-radius:4px;" placeholder="${field.label}">
+                </div>`;
+            } else if (field.type === 'textarea') {
+                html += `
+                <div style="margin-bottom: 1.2rem;">
+                    <label style="display:block; color:#8A9E8A; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px;">${field.label}</label>
+                    <textarea data-input="${field.clave}" rows="4" style="width:100%; background:#1A3A1A; border:0.5px solid rgba(201,168,76,0.3); color:#F5F0E8; padding:0.75rem; font-family:var(--font-body); border-radius:4px;" placeholder="${field.label}"></textarea>
+                </div>`;
+            } else if (field.type === 'image') {
+                html += `
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display:block; color:#8A9E8A; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px;">${field.label}</label>
+                    <div style="border: 1px dashed rgba(201,168,76,0.4); background: #0F1F0F; padding: 2rem; text-align: center; border-radius: 4px; cursor: pointer; position: relative;" onclick="document.getElementById('file-${field.clave}').click()">
+                        <div style="color: #C9A84C; font-size: 2rem; margin-bottom: 0.5rem;">📤</div>
+                        <div style="color: #F5F0E8; font-size: 0.9rem;">Arrastra o haz clic para subir</div>
+                        <input type="file" id="file-${field.clave}" accept="image/*" style="display:none;" onchange="subirImagenEditor(this.files[0], '${field.clave}')">
+                        <img data-preview-img="${field.clave}" src="" style="display:none; max-width:100%; max-height:150px; margin-top:15px; border-radius:4px; border:1px solid rgba(201,168,76,0.5);">
+                    </div>
+                </div>`;
+            }
         });
 
-        e.target.querySelectorAll('.cms-image-url-input').forEach(input => {
-            const campo = input.getAttribute('data-campo');
-            const url = input.value;
-            // merge with existing payload or create new
-            let p = payloads.find(x => x.campo === campo);
-            if(p) p.valor_imagen_url = url;
-            else payloads.push({ seccion: section, campo: campo, valor_imagen_url: url, actualizado_por: userId, updated_at: new Date().toISOString() });
+        html += `
+            <div style="position: sticky; bottom: 0; padding: 20px 0; background: #0A0F0A; border-top: 1px solid rgba(201,168,76,0.2); margin-top: 20px; z-index: 10;">
+                <button type="submit" class="btn-primary" style="width:100%; background:#C9A84C; color:#0A0F0A; font-weight:600; padding:0.85rem; border:none; border-radius:4px; cursor:pointer;">Guardar Cambios</button>
+            </div>
+        </form>`;
+
+        formDiv.innerHTML = html;
+        area.appendChild(formDiv);
+    });
+
+    // Listeners para live preview
+    document.querySelectorAll('[data-input]').forEach(input => {
+        input.addEventListener('input', () => {
+            hasUnsavedChanges = true;
+            const clave = input.dataset.input;
+            const iframe = document.getElementById('preview-iframe');
+            if (!iframe || !iframe.contentDocument) return;
+            
+            iframe.contentDocument.querySelectorAll(\`[data-editable="\${clave}"]\`)
+                .forEach(el => el.textContent = input.value);
         });
+    });
+}
 
-        // 3. Upsert to DB
-        const { error } = await _s.from('contenido_pagina').upsert(payloads, { onConflict: 'seccion,campo' });
-        if (error) throw error;
+function showForm(section) {
+    Object.keys(FORM_STRUCTURES).forEach(s => {
+        const f = document.getElementById(`form-${s}`);
+        if(f) f.style.display = s === section ? 'block' : 'none';
+    });
+    hasUnsavedChanges = false;
+}
 
-        hasUnsavedCmsChanges = false;
-        
-        // Refrescar data en memoria
-        payloads.forEach(p => {
-            cmsData[`${p.seccion}_${p.campo}`] = p;
-        });
+async function cargarEditorContenido() {
+    const { data } = await _s.from('contenido_pagina').select('clave, valor_texto, valor_imagen_url');
+    if (!data) return;
 
-        // Toast elegante
-        const t = document.createElement('div');
-        t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#C9A84C;color:#0A0F0A;padding:15px 25px;border-radius:8px;font-weight:bold;box-shadow:0 10px 30px rgba(0,0,0,0.5);z-index:99999;animation:slideUp 0.3s;';
-        t.innerHTML = '✓ Cambios guardados correctamente';
-        document.body.appendChild(t);
-        setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(), 300); }, 3000);
+    data.forEach(({ clave, valor_texto, valor_imagen_url }) => {
+        const input = document.querySelector(\`[data-input="\${clave}"]\`);
+        if (input && valor_texto) input.value = valor_texto;
 
-    } catch (err) {
-        alert('Error al guardar: ' + err.message);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = '💾 Guardar Cambios';
+        const preview = document.querySelector(\`[data-preview-img="\${clave}"]\`);
+        if (preview && valor_imagen_url) {
+            preview.src = valor_imagen_url;
+            preview.style.display = 'block';
+        }
+    });
+}
+
+async function guardarSeccion(event, section) {
+    event.preventDefault();
+    const boton = event.target.querySelector('button[type="submit"]');
+    boton.disabled = true;
+    const oldText = boton.textContent;
+    boton.innerHTML = '⏳ Guardando...';
+
+    // Collect all inputs in this form
+    const inputs = event.target.querySelectorAll('[data-input]');
+    const filas = Array.from(inputs).map(input => {
+        return {
+            clave: input.dataset.input,
+            valor_texto: input.value || null,
+            updated_at: new Date().toISOString(),
+            actualizado_por: usuarioActual?.id
+        };
+    }).filter(f => f.valor_texto !== null && f.valor_texto !== ''); // Only upsert non-empty or empty? We upsert all so we can clear
+
+    const { error } = await _s.from('contenido_pagina').upsert(filas, { onConflict: 'clave' });
+
+    boton.disabled = false;
+    boton.textContent = oldText;
+
+    if (!error) {
+        mostrarToast('✓ Cambios guardados');
+        hasUnsavedChanges = false;
+    } else {
+        mostrarToast('Error al guardar', 'error');
+        console.error(error);
     }
 }
 
-function sendLivePreview() {
-    const iframe = document.getElementById('cms-preview-iframe');
-    if (!iframe || !iframe.contentWindow) return;
+async function subirImagenEditor(file, clave) {
+    if (!file) return;
+    const botonParent = document.querySelector(\`#file-\${clave}\`).parentElement;
+    botonParent.style.opacity = '0.5';
+    
+    const ext = file.name.split('.').pop();
+    const path = \`editor/\${clave}-\${Date.now()}.\${ext}\`;
 
-    // Collect current form payloads
-    const currentSection = currentCmsSection;
-    const form = document.getElementById('cms-form');
-    if (!form) return;
+    const { error } = await _s.storage.from('imagenes-pagina').upload(path, file, { upsert: true });
 
-    const payloads = [];
-    form.querySelectorAll('.cms-value-input').forEach(input => {
-        const campo = input.getAttribute('data-campo');
-        const isCheckbox = input.type === 'checkbox';
-        const val = isCheckbox ? (input.checked ? 'true' : 'false') : input.value;
-        payloads.push({ seccion: currentSection, campo: campo, valor_texto: val });
-    });
-    form.querySelectorAll('.cms-image-url-input').forEach(input => {
-        const campo = input.getAttribute('data-campo');
-        let p = payloads.find(x => x.campo === campo);
-        if(p) p.valor_imagen_url = input.value;
-        else payloads.push({ seccion: currentSection, campo: campo, valor_imagen_url: input.value });
-    });
+    if (error) { 
+        mostrarToast('Error al subir imagen', 'error'); 
+        botonParent.style.opacity = '1';
+        return; 
+    }
 
-    // Merge with existing cmsData (convert cmsData object to array)
-    const allData = Object.values(cmsData).map(row => {
-        // If this row belongs to the current section being edited, we skip it here and use the payload instead
-        const p = payloads.find(x => x.seccion === row.seccion && x.campo === row.campo);
-        if (p) return null;
-        return row;
-    }).filter(Boolean);
+    const url = _s.storage.from('imagenes-pagina').getPublicUrl(path).data.publicUrl;
 
-    // Concatenate allData with current payloads
-    const mergedData = allData.concat(payloads);
+    // Guardar URL en Supabase
+    await _s.from('contenido_pagina').upsert({
+        clave,
+        valor_imagen_url: url,
+        updated_at: new Date().toISOString(),
+        actualizado_por: usuarioActual?.id
+    }, { onConflict: 'clave' });
 
-    iframe.contentWindow.postMessage({
-        type: 'cms_live_preview',
-        payload: mergedData
-    }, '*');
+    // Actualizar preview del iframe
+    const iframe = document.getElementById('preview-iframe');
+    if (iframe && iframe.contentDocument) {
+        iframe.contentDocument.querySelectorAll(\`[data-editable-img="\${clave}"]\`)
+            .forEach(el => {
+                if(el.tagName === 'IFRAME') el.src = url;
+                else el.src = url;
+                
+                // Si es hero-fondo (que tiene estilo absolute), actualiza su src.
+                // Eventos también usan data-editable-img y tienen un fallback onload en el HTML que actualiza su background-image.
+            });
+    }
+
+    // Mostrar miniatura en el editor
+    const preview = document.querySelector(\`[data-preview-img="\${clave}"]\`);
+    if (preview) { 
+        preview.src = url; 
+        preview.style.display = 'block'; 
+    }
+
+    botonParent.style.opacity = '1';
+    mostrarToast('✓ Imagen guardada');
 }
+
+function mostrarToast(msg, type = 'success') {
+    const t = document.createElement('div');
+    t.style.cssText = \`position:fixed;bottom:20px;right:20px;background:#1A3A1A;border-left:3px solid \${type==='error'?'#ff6b6b':'#C9A84C'};color:#fff;padding:15px 25px;border-radius:4px;box-shadow:0 10px 30px rgba(0,0,0,0.5);z-index:99999;transition:opacity 0.3s;\`;
+    t.innerHTML = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(), 300); }, 3000);
+}
+
+function setupMobilePreview() {
+    const btnPreview = document.getElementById('btn-cms-preview-mobile');
+    const panelRight = document.getElementById('cms-preview-panel');
+    const btnClose = document.querySelector('.btn-cms-close-preview');
+
+    if (window.innerWidth <= 900) {
+        btnPreview.style.display = 'block';
+        panelRight.style.display = 'none';
+        panelRight.style.position = 'fixed';
+        panelRight.style.top = '0';
+        panelRight.style.left = '0';
+        panelRight.style.width = '100%';
+        panelRight.style.height = '100vh';
+        panelRight.style.zIndex = '9999';
+        btnClose.style.display = 'block';
+    }
+
+    btnPreview.addEventListener('click', () => {
+        panelRight.style.display = 'block';
+    });
+    btnClose.addEventListener('click', () => {
+        panelRight.style.display = 'none';
+    });
+}
+
+// Check if iframe updates on load
+document.getElementById('preview-iframe').addEventListener('load', () => {
+    // We don't need to force update here because index.html calls cargarContenido() itself.
+    // But we can just make sure inputs match the view just in case.
+});
