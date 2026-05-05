@@ -38,37 +38,79 @@ CREATE TABLE public.grupo_miembros (
     UNIQUE(grupo_id, usuario_id)
 );
 
--- Módulos del Curso Bíblico
-CREATE TABLE public.modulos_curso (
+-- NUEVO ESQUEMA DE CURSO BÍBLICO (Tipo Udemy)
+CREATE TABLE public.niveles_curso (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     titulo TEXT NOT NULL,
     descripcion TEXT,
     orden INTEGER NOT NULL,
     activo BOOLEAN DEFAULT true,
-    archivo_url TEXT,
-    contenido_texto TEXT,
-    creado_por UUID REFERENCES public.usuarios(id),
+    imagen_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
--- Tareas
-CREATE TABLE public.tareas (
+CREATE TABLE public.modulos_curso (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    nivel_id UUID REFERENCES public.niveles_curso(id) ON DELETE CASCADE,
+    titulo TEXT NOT NULL,
+    descripcion TEXT,
+    orden INTEGER NOT NULL,
+    activo BOOLEAN DEFAULT true,
+    imagen_portada_url TEXT,
+    duracion_estimada TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+CREATE TABLE public.lecciones (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     modulo_id UUID REFERENCES public.modulos_curso(id) ON DELETE CASCADE,
     titulo TEXT NOT NULL,
-    descripcion TEXT,
-    archivo_url TEXT,
-    creado_por UUID REFERENCES public.usuarios(id),
+    contenido_texto TEXT,
+    video_url TEXT,
+    orden INTEGER NOT NULL,
+    activo BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
--- Progreso del Curso
-CREATE TABLE public.progreso_curso (
+CREATE TABLE public.archivos_leccion (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    leccion_id UUID REFERENCES public.lecciones(id) ON DELETE CASCADE,
+    nombre TEXT NOT NULL,
+    descripcion TEXT,
+    archivo_url TEXT NOT NULL,
+    tipo TEXT,
+    tamano_kb INTEGER,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+CREATE TABLE public.trabajos_modulo (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    modulo_id UUID REFERENCES public.modulos_curso(id) ON DELETE CASCADE UNIQUE,
+    titulo TEXT NOT NULL,
+    descripcion TEXT,
+    instrucciones_detalladas TEXT,
+    archivo_referencia_url TEXT,
+    fecha_limite TIMESTAMP WITH TIME ZONE,
+    activo BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+CREATE TABLE public.progreso_leccion (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    usuario_id UUID REFERENCES public.usuarios(id) ON DELETE CASCADE,
+    leccion_id UUID REFERENCES public.lecciones(id) ON DELETE CASCADE,
+    completada BOOLEAN DEFAULT false,
+    fecha_completada TIMESTAMP WITH TIME ZONE,
+    UNIQUE(usuario_id, leccion_id)
+);
+
+CREATE TABLE public.progreso_modulo (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     usuario_id UUID REFERENCES public.usuarios(id) ON DELETE CASCADE,
     modulo_id UUID REFERENCES public.modulos_curso(id) ON DELETE CASCADE,
-    leido BOOLEAN DEFAULT false,
-    fecha_lectura TIMESTAMP WITH TIME ZONE,
+    completado BOOLEAN DEFAULT false,
+    porcentaje INTEGER DEFAULT 0,
+    fecha_completado TIMESTAMP WITH TIME ZONE,
     UNIQUE(usuario_id, modulo_id)
 );
 
