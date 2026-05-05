@@ -61,13 +61,29 @@ function setupNav() {
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(v => {
+                v.classList.remove('active');
+                v.style.display = 'none';
+            });
             btn.classList.add('active');
             const target = btn.getAttribute('data-target');
-            document.getElementById(target).classList.add('active');
-            document.getElementById('page-title').textContent = btn.textContent.trim();
+            const el = document.getElementById(target);
+            if (el) {
+                el.classList.add('active');
+                el.style.display = 'block';
+            }
+            const titleEl = document.getElementById('page-title');
+            if (titleEl) titleEl.textContent = btn.textContent.trim();
+            
             if (target === 'view-stats') Object.values(charts).forEach(c => c?.resize?.());
             if (target === 'view-roles-log') loadRolesLog();
+            
+            // Scroll to top of main content
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 }

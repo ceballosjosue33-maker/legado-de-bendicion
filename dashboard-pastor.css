@@ -22,7 +22,7 @@ body {
     background-color: var(--bg-main);
     color: var(--text-primary);
     font-family: var(--font-body);
-    overflow-x: hidden;
+    overflow: hidden; /* Evitar scroll en todo el body */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -152,14 +152,16 @@ button {
 /* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
     background-color: var(--color-dark-green);
     border-right: 1px solid rgba(201, 168, 76, 0.1);
     display: flex;
     flex-direction: column;
-    position: fixed;
-    height: 100vh;
-    left: 0;
+    position: sticky;
     top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 10;
 }
 
 .sidebar-header {
@@ -231,10 +233,10 @@ button {
 /* Main Content */
 .main-content {
     flex: 1;
-    margin-left: var(--sidebar-width);
     padding: 2rem 3rem;
     background: radial-gradient(circle at top right, var(--color-dark-green) 0%, var(--bg-main) 60%);
-    min-height: 100vh;
+    overflow-y: auto;
+    height: 100vh;
 }
 
 .top-header {
@@ -488,4 +490,53 @@ button {
 .toast-icon {
     color: var(--color-primary);
     font-weight: bold;
+}
+/* MOBILE LAYOUT */
+@media (max-width: 900px) {
+    .dashboard-layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        max-height: 150px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-right: none;
+        border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+    }
+    .sidebar-header {
+        display: none; /* Hide logo on mobile to save space */
+    }
+    .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0.5rem;
+        gap: 0.5rem;
+        white-space: nowrap;
+    }
+    .nav-item {
+        padding: 0.8rem 1rem;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+    .nav-item.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--color-primary);
+    }
+    .sidebar-footer {
+        display: none; /* Can add a separate logout button in header */
+    }
+    .main-content {
+        padding: 1.5rem;
+        height: auto;
+        min-height: calc(100vh - 60px);
+    }
+    .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 }
