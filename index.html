@@ -269,6 +269,26 @@
             pointer-events: none;
         }
 
+        .hero-bg-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw;
+            height: 60vw;
+            max-width: 600px;
+            max-height: 600px;
+            background-image: url('https://scontent.fclo1-4.fna.fbcdn.net/v/t39.30808-6/486432710_931766482503686_3903717456267471297_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=90jPxAqwdXoQ7kNvwH3M0Yr&_nc_oc=AdpAVk7ivquIhFz0g65Uz437PJ6YuyjFIb4TlWmJ76EqiXmDBvWhXVsrAHziTcvqgfgJJdi3ABabnclm-kPJCG5m&_nc_zt=23&_nc_ht=scontent.fclo1-4.fna&_nc_gid=GwZoJS7PzoGJtfoCLfV56Q&_nc_ss=7b2a8&oh=00_Af6HrvQGFpD6yeTzozSFHAG_uJnekNPrcmu2fPBgcjljaw&oe=69FF3CB6');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.08; /* Muy difuminado / transparente */
+            filter: blur(2px) grayscale(30%); /* Efecto difuminado elegante */
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
         .hero-overlay {
             position: absolute;
             top: 0;
@@ -1470,6 +1490,7 @@
 
     <!-- Hero Section -->
     <header class="hero" id="inicio">
+        <div class="hero-bg-logo"></div>
         <div class="hero-bg-cross"></div>
         <div class="hero-glow"></div>
         <div class="hero-overlay"></div>
