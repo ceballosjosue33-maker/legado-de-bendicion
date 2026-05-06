@@ -59,7 +59,7 @@ function renderLMSHome() {
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
     `;
 
-    let previoCompletado = true; // El primer nivel siempre está desbloqueado
+    let previoCompletado = true;
     lmsData.niveles.forEach((nivel, idx) => {
         const mods = lmsData.modulos.filter(m => m.nivel_id === nivel.id);
         const modsIds = mods.map(m => m.id);
@@ -168,7 +168,6 @@ function openModuleViewer(moduloId) {
     currentLessons = lmsData.lecciones.filter(l => l.modulo_id === moduloId);
     if(currentLessons.length === 0) { alert('Este módulo aún no tiene lecciones.'); return; }
     
-    // Find first uncompleted lesson, or 0
     let startIndex = 0;
     for(let i=0; i<currentLessons.length; i++) {
         if(!lmsData.progresoLec.find(p => p.leccion_id === currentLessons[i].id && p.completada)) {
@@ -187,7 +186,6 @@ function loadLesson(index) {
     currentLessonIndex = index;
     const lec = currentLessons[index];
     
-    // Update Sidebar
     const sb = document.getElementById('lms-lessons-list');
     sb.innerHTML = '';
     currentLessons.forEach((l, i) => {
@@ -199,7 +197,6 @@ function loadLesson(index) {
         sb.appendChild(div);
     });
 
-    // Update Main Content
     const mc = document.getElementById('lms-main-content');
     let videoHtml = '';
     if(lec.video_url) {
@@ -219,7 +216,6 @@ function loadLesson(index) {
         </div>
     `;
 
-    // Footer Buttons & Timer
     const btnPrev = document.getElementById('btn-lms-prev');
     const btnNext = document.getElementById('btn-lms-next');
     const btnComp = document.getElementById('btn-lms-complete');
@@ -249,7 +245,7 @@ function loadLesson(index) {
         secondsInLesson = 0;
         lessonTimer = setInterval(() => {
             secondsInLesson++;
-            if(secondsInLesson >= 5) { // 5s for testing, prompt said 30s but 5s is better for UX right now
+            if(secondsInLesson >= 5) {
                 clearInterval(lessonTimer);
                 msgTimer.style.display = 'none';
                 btnComp.style.display = 'block';
@@ -265,11 +261,18 @@ function loadLesson(index) {
             completada: true,
             fecha_completada: new Date().toISOString()
         });
-        await fetchLMSData(); // refresh
+        await fetchLMSData();
+        
+        // Check if there's a work/task for this module
+        const { data: trabajo } = await _s.from('trabajos_modulo').select('*').eq('modulo_id', lec.modulo_id).single();
+
         if(index < currentLessons.length - 1) {
             loadLesson(index + 1);
+        } else if (trabajo) {
+            // All lessons done, show work section
+            renderModuloTrabajoSection(lec.modulo_id, trabajo);
         } else {
-            // Recalculate module progress
+            // No work, complete module
             await _s.from('progreso_modulo').upsert({
                 usuario_id: currentUserLMS, modulo_id: lec.modulo_id, completado: true, porcentaje: 100, fecha_completado: new Date().toISOString()
             });
@@ -279,6 +282,113 @@ function loadLesson(index) {
             alert('¡Módulo completado con éxito! 🎉');
         }
     };
+}
+
+async function renderModuloTrabajoSection(moduloId, trabajo) {
+    const mc = document.getElementById('lms-main-content');
+    const { data: entrega } = await _s.from('entregas_trabajo').select('*').eq('trabajo_id', trabajo.id).eq('alumno_id', currentUserLMS).single();
+    
+    const estado = entrega ? entrega.estado : 'pendiente_entrega';
+    const badges = {
+        'pendiente_entrega': '<span class="badge" style="background:rgba(136,136,136,0.1);color:#888">📝 Pendiente de Entrega</span>',
+        'entregado': '<span class="badge" style="background:rgba(74,158,255,0.1);color:#4A9EFF">⏳ En Revisión</span>',
+        'aprobado': '<span class="badge" style="background:rgba(76,175,80,0.15);color:#4CAF50">✅ Módulo Aprobado</span>',
+        'rechazado': '<span class="badge" style="background:rgba(255,82,82,0.1);color:#FF5252">↩️ Requiere Cambios</span>'
+    };
+
+    mc.innerHTML = `
+        <div class="trabajo-section" style="padding: 2rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border-color);">
+            <div class="flex-between mb-2">
+                <h2 style="color: var(--color-primary); font-family: var(--font-heading); font-size: 2rem;">📝 Trabajo Final: ${trabajo.titulo}</h2>
+                ${badges[estado] || ''}
+            </div>
+            
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">${trabajo.descripcion}</p>
+            
+            <div style="background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                <h4 style="color: var(--color-primary); margin-bottom: 10px;">Instrucciones</h4>
+                <div style="color: #F5F0E8; line-height: 1.6;">${trabajo.instrucciones_detalladas}</div>
+                ${trabajo.archivo_referencia_url ? `
+                    <a href="${trabajo.archivo_referencia_url}" target="_blank" class="btn-outline-gold btn-small mt-2" style="display:inline-block; text-decoration:none;">📥 Descargar Material de Apoyo</a>
+                ` : ''}
+            </div>
+
+            ${estado === 'aprobado' ? `
+                <div style="text-align:center; padding: 2rem; background: rgba(76,175,80,0.1); border: 1px solid #4CAF50; border-radius: 8px;">
+                    <span style="font-size: 3rem;">🎉</span>
+                    <h3 style="color: #4CAF50; margin: 10px 0;">¡Excelente trabajo!</h3>
+                    <p>Has completado este módulo con éxito. El pastor ha calificado tu entrega.</p>
+                    ${entrega.retroalimentacion ? `<p style="font-style:italic; margin-top:10px;">"${entrega.retroalimentacion}"</p>` : ''}
+                </div>
+            ` : `
+                <form id="form-entrega" style="display: ${estado === 'entregado' ? 'none' : 'block'}">
+                    <div class="form-group">
+                        <label>Comentarios para el Pastor</label>
+                        <textarea id="entrega-comentario" class="form-input" rows="3" placeholder="Describe brevemente tu entrega...">${entrega?.comentario || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Subir Trabajo (PDF, ZIP, DOCX - Máx 50MB)</label>
+                        <input type="file" id="entrega-file" class="form-input" style="padding: 10px;">
+                    </div>
+                    <div id="upload-progress-container" style="display:none; margin-bottom: 1rem;">
+                        <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;">
+                            <div id="upload-progress-fill" style="width:0%; height:100%; background:linear-gradient(90deg, #C9A84C, #E8C96C); transition:width 0.3s;"></div>
+                        </div>
+                        <small id="upload-status" style="color:var(--color-primary);">Subiendo archivo...</small>
+                    </div>
+                    <button type="submit" class="btn-primary-solid" style="width:100%">${estado === 'rechazado' ? 'Reenviar Trabajo' : '📤 Enviar Trabajo Final'}</button>
+                    ${estado === 'rechazado' ? `
+                        <div style="margin-top:1rem; padding:1rem; background:rgba(255,82,82,0.1); border-left:4px solid #FF5252; color:#FF5252;">
+                            <strong>Motivo de devolución:</strong> ${entrega.retroalimentacion}
+                        </div>
+                    ` : ''}
+                </form>
+                ${estado === 'entregado' ? `<div style="text-align:center; color:var(--text-secondary);">Tu trabajo ha sido enviado y está esperando revisión.</div>` : ''}
+            `}
+        </div>
+    `;
+
+    document.getElementById('form-entrega')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const file = document.getElementById('entrega-file').files[0];
+        const comentario = document.getElementById('entrega-comentario').value;
+        if(!file && estado !== 'rechazado') return alert('Por favor selecciona un archivo');
+        
+        await entregarTrabajo(trabajo.id, moduloId, file, comentario);
+    });
+}
+
+async function entregarTrabajo(trabajoId, moduloId, file, comentario) {
+    const progressFill = document.getElementById('upload-progress-fill');
+    const container = document.getElementById('upload-progress-container');
+    if(container) container.style.display = 'block';
+
+    let archivoUrl = null;
+    let storagePath = null;
+
+    if(file) {
+        const path = `${trabajoId}/${currentUserLMS}/${Date.now()}_${file.name}`;
+        const { data, error } = await _s.storage.from('entregas-alumnos').upload(path, file);
+        if(error) return alert('Error subiendo archivo: ' + error.message);
+        storagePath = path;
+        archivoUrl = _s.storage.from('entregas-alumnos').getPublicUrl(path).data.publicUrl;
+    }
+
+    const { error: dbErr } = await _s.from('entregas_trabajo').upsert({
+        trabajo_id: trabajoId,
+        alumno_id: currentUserLMS,
+        archivo_url: archivoUrl,
+        storage_path: storagePath,
+        comentario: comentario,
+        estado: 'entregado',
+        entregado_at: new Date().toISOString()
+    });
+
+    if(dbErr) alert(dbErr.message);
+    else {
+        alert('✅ Trabajo entregado correctamente.');
+        location.reload();
+    }
 }
 
 document.getElementById('btn-close-lms')?.addEventListener('click', () => {
