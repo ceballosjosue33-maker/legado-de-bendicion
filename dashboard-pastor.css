@@ -588,8 +588,239 @@ button {
 }
 .table-input:focus { border-color: var(--color-primary); }
 
+
 .btn-xs {
     padding: 4px 8px;
     font-size: 0.75rem;
     border-radius: 4px;
 }
+
+/* =========================================
+   CMS — Contenido Web Module
+   ========================================= */
+
+/* The CMS section overrides main-content padding & scroll */
+.cms-section {
+    margin: -2rem -3rem;
+    padding: 1.5rem 2rem;
+    height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Two-column layout */
+.cms-layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    gap: 0;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0A0F0A;
+}
+
+/* Editor column — 40% */
+.cms-editor-col {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(201, 168, 76, 0.25);
+    background: #0A0F0A;
+    min-height: 0;
+}
+
+/* Preview column — 60% */
+.cms-preview-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #060E06;
+    min-height: 0;
+}
+
+/* Column header bar */
+.cms-col-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.2rem;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+    background: #0F1F0F;
+    flex-shrink: 0;
+}
+
+/* Tabs bar */
+.cms-tabs-bar {
+    display: flex;
+    overflow-x: auto;
+    background: #0F1F0F;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+    flex-shrink: 0;
+    scrollbar-width: none;
+}
+.cms-tabs-bar::-webkit-scrollbar { display: none; }
+
+.cms-tab {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #8A9E8A;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.cms-tab:hover {
+    color: #C9A84C;
+    background: rgba(201, 168, 76, 0.05);
+}
+
+/* Forms scrollable area */
+.cms-forms-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.4rem 1.4rem 5rem;
+    background: #0A0F0A;
+}
+
+/* Preview scrollable area */
+.cms-preview-content {
+    flex: 1;
+    overflow-y: auto;
+    background: #060E06;
+}
+
+/* Form fields inside CMS */
+.cms-form-title {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.cms-field {
+    margin-bottom: 1.1rem;
+}
+
+.cms-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-family: var(--font-body);
+}
+
+.cms-input {
+    width: 100%;
+    background: var(--color-medium-green);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: 5px;
+    padding: 0.72rem 0.9rem;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    transition: border-color 0.2s;
+    resize: vertical;
+}
+.cms-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.1);
+}
+
+/* Save bar sticky at bottom of form area */
+.cms-save-bar {
+    position: sticky;
+    bottom: 0;
+    padding: 1rem 0;
+    background: linear-gradient(to top, #0A0F0A 80%, transparent);
+    margin-top: 1.5rem;
+}
+
+/* Dynamic list rows (horarios, eventos, sermones) */
+.list-row {
+    background: var(--color-dark-green);
+    border: 1px solid rgba(201, 168, 76, 0.15);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    transition: border-color 0.2s;
+}
+.list-row:hover {
+    border-color: rgba(201, 168, 76, 0.35);
+}
+
+.list-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+
+.list-row-num {
+    color: var(--color-primary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.list-row-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.list-row-fields .form-input {
+    font-size: 0.88rem;
+    padding: 0.6rem 0.8rem;
+}
+
+.cms-empty {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 1.5rem;
+    border: 1px dashed rgba(201, 168, 76, 0.2);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* Custom scrollbar for CMS panels */
+.custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(201, 168, 76, 0.25); border-radius: 3px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(201, 168, 76, 0.5); }
+
+/* Mobile responsive for CMS */
+@media (max-width: 900px) {
+    .cms-section {
+        margin: -1.5rem;
+        padding: 1rem;
+        height: auto;
+        overflow: visible;
+    }
+    .cms-layout {
+        flex-direction: column;
+        height: auto;
+    }
+    .cms-editor-col {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+        max-height: 60vh;
+    }
+    .cms-preview-col {
+        max-height: 70vh;
+    }
+    #btn-cms-preview-mobile { display: block !important; }
+}
+
