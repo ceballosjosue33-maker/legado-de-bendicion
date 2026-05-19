@@ -15,6 +15,7 @@ CREATE TABLE public.usuarios (
     telefono TEXT,
     foto_url TEXT,
     rol TEXT CHECK (rol IN ('pastor', 'lider', 'discipulo', 'estudiante')) DEFAULT 'estudiante',
+    roles TEXT[] DEFAULT ARRAY['estudiante']::TEXT[],
     lider_asignado_id UUID REFERENCES public.usuarios(id),
     fecha_registro TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
     activo BOOLEAN DEFAULT true

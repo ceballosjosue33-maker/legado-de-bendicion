@@ -52,10 +52,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authContainer = document.querySelector('.nav-auth-buttons');
 
     if (session) {
-        const { data: u } = await _s.from('usuarios').select('rol, nombre, foto_url').eq('id', session.user.id).maybeSingle();
+        const { data: u } = await _s.from('usuarios').select('rol, roles, nombre, foto_url').eq('id', session.user.id).maybeSingle();
         if (u && authContainer) {
             const firstName = (u.nombre || 'Usuario').split(' ')[0];
-            const dashUrl = u.rol === 'pastor' ? 'dashboard-pastor.html' : u.rol === 'lider' ? 'dashboard-lider.html' : 'dashboard-miembro.html';
+            const rolesStr = (u?.roles || []).join(',') + ',' + (u?.rol || '');
+            const dashUrl = rolesStr.includes('pastor') ? 'dashboard-pastor.html' : rolesStr.includes('lider') ? 'dashboard-lider.html' : 'dashboard-miembro.html';
             const avatarHtml = u.foto_url
                 ? `<img src="${u.foto_url}" alt="${firstName}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #C9A84C;">`
                 : `<div style="width:36px;height:36px;border-radius:50%;background:#C9A84C;color:#0A0F0A;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Cormorant Garamond',serif;font-size:1.2rem;">${firstName[0].toUpperCase()}</div>`;
@@ -72,13 +73,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.location.reload();
             });
 
-            if (u.rol === 'pastor' && new URLSearchParams(window.location.search).get('mode') === 'edit') {
+            if (rolesStr.includes('pastor') && new URLSearchParams(window.location.search).get('mode') === 'edit') {
                 enableEditMode();
             }
         }
 
         // Lógica de visibilidad por roles
-        if (u && (u.rol === 'pastor' || u.rol === 'estudiante' || u.rol === 'lider')) {
+        const userRolesStr = u ? (u?.roles || []).join(',') + ',' + (u?.rol || '') : '';
+        if (u && (userRolesStr.includes('pastor') || userRolesStr.includes('estudiante') || userRolesStr.includes('lider') || userRolesStr.includes('discipulo'))) {
             unlockSection('curso-biblico');
             document.querySelectorAll('.nav-item-curso').forEach(el => el.style.display = 'block');
         } else {

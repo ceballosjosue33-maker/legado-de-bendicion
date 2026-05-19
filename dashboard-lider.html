@@ -116,14 +116,9 @@
                 </div>
             </section>
 
-            <!-- VIEW: CURSO BÍBLICO (Read Only) -->
+            <!-- VIEW: CURSO BÍBLICO -->
             <section id="view-course" class="view-section">
-                <div class="flex-between mb-2">
-                    <h3 class="section-heading">Módulos del Curso</h3>
-                    <span class="text-secondary">Vista de Lectura</span>
-                </div>
-                
-                <div class="modules-grid" id="modules-container">
+                <div id="lms-app-root">
                     <p class="text-secondary text-center w-100">Cargando módulos...</p>
                 </div>
             </section>
@@ -184,6 +179,30 @@
         </div>
     </div>
 
+    <!-- MODAL: LMS VIEWER (Lección / Trabajo) -->
+    <div class="modal" id="modal-lms-viewer" style="z-index: 9999;">
+        <div class="modal-content" style="max-width: 900px; width: 95%; height: 90vh; display: flex; flex-direction: column; padding: 0; background: var(--bg-main); border: 1px solid var(--color-primary); overflow: hidden;">
+            <div style="padding: 15px 20px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.5); display: flex; justify-content: space-between; align-items: center;">
+                <div id="lms-viewer-breadcrumb" style="color: var(--text-secondary); font-size: 0.9rem;">Cargando...</div>
+                <button class="btn-secondary" style="padding: 5px 10px;" id="btn-close-lms">✖ Cerrar</button>
+            </div>
+            <div style="display: flex; flex: 1; overflow: hidden; position: relative;">
+                <div id="lms-sidebar" style="width: 250px; background: rgba(255,255,255,0.02); border-right: 1px solid var(--border-color); overflow-y: auto; display: flex; flex-direction: column;" class="custom-scrollbar">
+                    <div style="padding: 15px; font-weight: bold; color: var(--color-primary); border-bottom: 1px solid rgba(255,255,255,0.05);">Contenido del Módulo</div>
+                    <div id="lms-lessons-list" style="padding: 10px;"></div>
+                </div>
+                <div id="lms-main-content" style="flex: 1; overflow-y: auto; padding: 30px; background: #0A0F0A;" class="custom-scrollbar">
+                </div>
+            </div>
+            <div style="padding: 15px 20px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.5); display: flex; justify-content: space-between; align-items: center;">
+                <button class="btn-outline-gold" id="btn-lms-prev" style="visibility: hidden;">&larr; Anterior</button>
+                <div id="lms-timer-msg" style="color: var(--text-secondary); font-size: 0.9rem; display: none;">⏳ Estudia el contenido para completar...</div>
+                <button class="btn-primary-solid" id="btn-lms-complete" style="display: none;">Marcar como Completada ✓</button>
+                <button class="btn-outline-gold" id="btn-lms-next" style="visibility: hidden;">Siguiente &rarr;</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast-container" class="toast-container"></div>
 
@@ -192,5 +211,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="config.js"></script>
     <script src="dashboard-lider.js"></script>
+    <script src="dashboard-miembro-curso.js"></script>
 </body>
 </html>

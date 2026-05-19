@@ -10,10 +10,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!session) return window.location.href = 'auth.html';
     currentUser = session.user;
 
-    const { data: u, error } = await _s.from('usuarios').select('rol, nombre').eq('id', currentUser.id).maybeSingle();
-    if (error || !u || (u.rol !== 'lider' && u.rol !== 'pastor')) {
+    const { data: u, error } = await _s.from('usuarios').select('rol, roles, nombre').eq('id', currentUser.id).maybeSingle();
+    const rolesStr = (u?.roles || []).join(',') + ',' + (u?.rol || '');
+    if (error || !u || (!rolesStr.includes('lider') && !rolesStr.includes('pastor'))) {
         alert('Acceso denegado: área exclusiva para Líderes.');
         return window.location.href = 'auth.html';
+    }
+
+    // Hide Course tab if not a student
+    if (!rolesStr.includes('estudiante') && !rolesStr.includes('discipulo')) {
+        document.querySelector('.nav-item[data-target="view-course"]')?.remove();
     }
 
     document.getElementById('user-name').textContent = u.nombre;
@@ -51,7 +57,6 @@ async function loadData() {
     renderKPIs();
     renderDisciplesTable();
     buildCharts();
-    renderCourseReadonly();
 }
 
 // ── KPIs ──────────────────────────────────
@@ -174,13 +179,19 @@ function setupAddDisciple() {
 async function searchUnassigned(term) {
     const container = document.getElementById('unassigned-container');
     container.innerHTML = '<p class="text-secondary text-center">Buscando...</p>';
-    let query = _s.from('usuarios').select('id, nombre, email').in('rol', ['estudiante', 'discipulo']).is('lider_asignado_id', null);
+    let query = _s.from('usuarios').select('id, nombre, email, rol, roles').is('lider_asignado_id', null);
     if (term.trim()) query = query.ilike('nombre', `%${term.trim()}%`);
-    const { data, error } = await query.limit(15);
+    const { data, error } = await query.limit(50);
+    // Filter locally to handle array checking safely without complex Postgres syntax
+    const filteredData = (data || []).filter(u => {
+        const rStr = (u.roles || []).join(',') + ',' + (u.rol || '');
+        return rStr.includes('estudiante') || rStr.includes('discipulo');
+    }).slice(0, 15);
+
     if (error) { container.innerHTML = `<p style="color:#ff6b6b">${error.message}</p>`; return; }
-    if (!data || data.length === 0) { container.innerHTML = '<p class="text-secondary text-center">Sin resultados sin líder asignado.</p>'; return; }
+    if (!filteredData || filteredData.length === 0) { container.innerHTML = '<p class="text-secondary text-center">Sin resultados sin líder asignado.</p>'; return; }
     container.innerHTML = '';
-    data.forEach(u => {
+    filteredData.forEach(u => {
         const div = document.createElement('div');
         div.className = 'unassigned-item';
         div.innerHTML = `<div><strong>${u.nombre}</strong><br><small style="color:#8A9E8A">${u.email}</small></div><button class="btn-primary btn-small" onclick="assignDisciple('${u.id}','${u.nombre.replace(/'/g,"\\'")}')">Asignar</button>`;
@@ -228,14 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ── CURSO (READONLY) ──────────────────────
-function renderCourseReadonly() {
-    const container = document.getElementById('modules-container');
-    if (!container) return;
-    container.innerHTML = allMods.length === 0
-        ? '<p class="text-secondary text-center">Sin módulos activos.</p>'
-        : allMods.map(m => `<div class="module-row"><div class="mod-info"><h4>Módulo ${m.orden}: ${m.titulo}</h4><p>${m.descripcion || ''}</p></div></div>`).join('');
-}
+// Curso Readonly has been removed. LMS Dashboard now handles course rendering inside #view-course
 
 // ── TOAST ─────────────────────────────────
 function showToast(msg, isError = false) {

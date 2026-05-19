@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentUser = session.user;
 
     const { data: u, error } = await _s.from('usuarios').select('*, lider:usuarios!lider_asignado_id(nombre, foto_url)').eq('id', currentUser.id).maybeSingle();
-    if (error || !u || (u.rol !== 'estudiante' && u.rol !== 'discipulo')) {
+    
+    // Inclusive role check
+    const rolesStr = (u?.roles || []).join(',') + ',' + (u?.rol || '');
+    if (error || !u || (!rolesStr.includes('estudiante') && !rolesStr.includes('discipulo') && !rolesStr.includes('lider'))) {
         alert('Acceso denegado.');
         return window.location.href = 'auth.html';
     }
@@ -20,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btn-logout').addEventListener('click', async () => { await _s.auth.signOut(); window.location.href = 'index.html'; });
     setupNav();
     populateProfile();
-    await loadCourse();
+    // loadCourse is now handled by dashboard-miembro-curso.js initLMS
 });
 
 // ── NAVEGACIÓN ────────────────────────────
@@ -107,93 +110,6 @@ function populateProfile() {
         if (bigAv) { bigAv.style.backgroundImage = `url('${publicUrl}')`; bigAv.style.backgroundSize = 'cover'; bigAv.textContent = ''; }
     });
 }
-
-// ── CURSO ─────────────────────────────────
-async function loadCourse() {
-    const [{ data: mods }, { data: prog }] = await Promise.all([
-        _s.from('modulos_curso').select('*').eq('activo', true).order('orden', { ascending: true }),
-        _s.from('progreso_curso').select('modulo_id, fecha_lectura').eq('usuario_id', currentUser.id).eq('leido', true)
-    ]);
-    allMods  = mods  || [];
-    userProg = prog  || [];
-    renderProgress();
-    renderModules();
-}
-
-function renderProgress() {
-    const total = allMods.length;
-    const done  = userProg.length;
-    const pct   = total > 0 ? Math.round(done / total * 100) : 0;
-    document.getElementById('kpi-completed').textContent = done;
-    document.getElementById('kpi-total').textContent     = total;
-    document.getElementById('course-percent').textContent = `${pct}%`;
-    document.getElementById('course-fill').style.width   = `${pct}%`;
-}
-
-function renderModules() {
-    const container = document.getElementById('modules-list');
-    if (!container) return;
-    if (allMods.length === 0) { container.innerHTML = '<p class="text-center text-secondary">No hay módulos disponibles.</p>'; return; }
-    const doneIds = new Set(userProg.map(p => p.modulo_id));
-    container.innerHTML = '';
-    let prevDone = true; // El primer módulo siempre disponible
-
-    allMods.forEach((m, idx) => {
-        const done      = doneIds.has(m.id);
-        const available = done || prevDone;
-        let cls = 'locked', icon = '🔒';
-        if (done)           { cls = 'completed'; icon = '✓'; }
-        else if (available) { cls = 'available'; icon = '📖'; }
-
-        const div = document.createElement('div');
-        div.className = `module-item ${cls}`;
-        div.innerHTML = `<div class="mod-icon">${icon}</div><div class="mod-info"><h3 class="mod-title">Módulo ${m.orden}: ${m.titulo}</h3><p class="mod-desc">${m.descripcion || ''}</p></div>`;
-        if (available) div.addEventListener('click', () => openLesson(m, done));
-        container.appendChild(div);
-        prevDone = done;
-    });
-}
-
-// ── LECCIÓN ───────────────────────────────
-let currentModId = null;
-function openLesson(m, isRead) {
-    currentModId = m.id;
-    document.getElementById('lesson-title').textContent = `Módulo ${m.orden}: ${m.titulo}`;
-    const lessonText = document.getElementById('lesson-text');
-    if (lessonText) lessonText.textContent = m.contenido_texto || 'Sin contenido de texto disponible.';
-
-    const attBox  = document.getElementById('lesson-attachment-box');
-    const dlBtn   = document.getElementById('lesson-download-btn');
-    if (attBox) attBox.style.display = m.archivo_url ? 'flex' : 'none';
-    if (dlBtn && m.archivo_url) dlBtn.href = m.archivo_url;
-
-    const readBtn = document.getElementById('btn-mark-read');
-    if (readBtn) readBtn.style.display = isRead ? 'none' : 'block';
-
-    document.getElementById('modal-lesson').classList.add('active');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('btn-close-lesson')?.addEventListener('click', () => document.getElementById('modal-lesson').classList.remove('active'));
-
-    document.getElementById('btn-mark-read')?.addEventListener('click', async () => {
-        const btn = document.getElementById('btn-mark-read');
-        btn.disabled = true; btn.textContent = 'Guardando...';
-        try {
-            const { error } = await _s.from('progreso_curso').upsert(
-                { usuario_id: currentUser.id, modulo_id: currentModId, leido: true, fecha_lectura: new Date().toISOString() },
-                { onConflict: 'usuario_id,modulo_id' }
-            );
-            if (error) throw error;
-            document.getElementById('modal-lesson').classList.remove('active');
-            await loadCourse();
-        } catch (err) {
-            alert('Error al guardar progreso: ' + err.message);
-        } finally {
-            btn.disabled = false; btn.textContent = 'Marcar como Leído ✓';
-        }
-    });
-});
 
 // ── UTILIDADES ────────────────────────────
 function showMsg(el, type, text) {

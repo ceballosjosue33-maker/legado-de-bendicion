@@ -190,7 +190,10 @@ async function buildCharts() {
 
     // 4. Top 5 líderes horizontal
     const { data: prog } = await _s.from('progreso_curso').select('usuario_id');
-    const leaders = allUsers.filter(u => u.rol === 'lider' || u.rol === 'pastor');
+    const leaders = allUsers.filter(u => {
+        const rolesStr = (u?.roles || []).join(',') + ',' + (u?.rol || '');
+        return rolesStr.includes('lider') || rolesStr.includes('pastor');
+    });
     const lStats = leaders.map(l => {
         const disc = allUsers.filter(u => u.lider_asignado_id === l.id);
         const possible = disc.length * allModules.length;
@@ -210,7 +213,10 @@ async function buildCharts() {
 function renderUsersTable(users) {
     const tbody = document.getElementById('table-users-body');
     tbody.innerHTML = '';
-    const leaders = allUsers.filter(u => u.rol === 'lider' || u.rol === 'pastor');
+    const leaders = allUsers.filter(u => {
+        const rolesStr = (u?.roles || []).join(',') + ',' + (u?.rol || '');
+        return rolesStr.includes('lider') || rolesStr.includes('pastor');
+    });
     const page = parseInt(tbody.dataset.page || '0');
     const pageSize = 20;
     const slice = users.slice(page * pageSize, (page + 1) * pageSize);
@@ -220,11 +226,16 @@ function renderUsersTable(users) {
     slice.forEach(u => {
         const fecha = new Date(u.fecha_registro).toLocaleDateString('es-ES');
         const isSelf = u.id === currentUser.id;
+        const rStr = (u.roles || []).join(',') + ',' + (u.rol || '');
+        const mainRole = u.rol || 'estudiante';
         const roleSelect = isSelf
             ? `<span class="badge-gold">Pastor</span>`
-            : `<select class="form-select" style="padding:.35rem;font-size:.9rem" onchange="confirmRole('${u.id}','${u.nombre.replace(/'/g,"\\'")}',this.value,this)">
-                ${['pastor','lider','discipulo','estudiante'].map(r => `<option value="${r}" ${u.rol===r?'selected':''}>${r.charAt(0).toUpperCase()+r.slice(1)}</option>`).join('')}
-               </select>`;
+            : `<div style="display:flex;align-items:center;gap:8px;">
+                 <select class="form-select" style="padding:.35rem;font-size:.9rem;flex:1;" onchange="confirmRole('${u.id}','${u.nombre.replace(/'/g,"\\'")}',this.value,this)">
+                   ${['pastor','lider','discipulo'].map(r => `<option value="${r}" ${mainRole===r?'selected':''}>${r.charAt(0).toUpperCase()+r.slice(1)}</option>`).join('')}
+                 </select>
+                 <label style="font-size:0.8rem;color:#8A9E8A;white-space:nowrap;margin:0;cursor:pointer;"><input type="checkbox" style="margin:0;" onchange="toggleEstudiante('${u.id}', this.checked)" ${rStr.includes('estudiante') ? 'checked' : ''}> Estudiante</label>
+               </div>`;
         const leaderOpts = `<option value="">-- Sin Líder --</option>` + leaders.filter(l => l.id !== u.id).map(l => `<option value="${l.id}" ${u.lider_asignado_id===l.id?'selected':''}>${l.nombre}</option>`).join('');
         const leaderSelect = `<select class="form-select" style="padding:.35rem;font-size:.9rem" onchange="assignLeader('${u.id}',this.value)">${leaderOpts}</select>`;
         const avatar = u.foto_url ? `<img src="${u.foto_url}" class="table-avatar" alt="">` : `<div class="table-avatar-placeholder">${u.nombre.charAt(0)}</div>`;

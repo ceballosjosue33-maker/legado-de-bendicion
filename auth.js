@@ -18,8 +18,8 @@ const msgRecover   = document.getElementById('msg-recover');
 (async () => {
     const { data: { session } } = await _s.auth.getSession();
     if (session) {
-        const { data: u } = await _s.from('usuarios').select('rol').eq('id', session.user.id).maybeSingle();
-        if (u) redirectByRole(u.rol);
+        const { data: u } = await _s.from('usuarios').select('rol, roles').eq('id', session.user.id).maybeSingle();
+        if (u) redirectByRole(u);
     }
 })();
 
@@ -36,9 +36,14 @@ function showMsg(el, type, text) {
     el.textContent = text;
 }
 
-function redirectByRole(rol) {
-    const map = { pastor: 'dashboard-pastor.html', lider: 'dashboard-lider.html' };
-    window.location.href = map[rol] || 'dashboard-miembro.html';
+function redirectByRole(u) {
+    if (typeof u === 'string') u = { rol: u };
+    const rolesStr = (u?.roles || []).join(',') + ',' + (u?.rol || '');
+    
+    // Priority routing for dashboard presentation
+    if (rolesStr.includes('pastor')) window.location.href = 'dashboard-pastor.html';
+    else if (rolesStr.includes('lider')) window.location.href = 'dashboard-lider.html';
+    else window.location.href = 'dashboard-miembro.html';
 }
 
 document.getElementById('link-register').addEventListener('click', e => { e.preventDefault(); showView(viewRegister, 'Crea tu cuenta'); });
@@ -70,14 +75,14 @@ document.getElementById('form-login').addEventListener('submit', async e => {
 
         const { data: userData, error: uErr } = await _s
             .from('usuarios')
-            .select('rol')
+            .select('rol, roles')
             .eq('id', data.user.id)
             .maybeSingle();
 
         if (uErr) throw new Error('Error consultando tu perfil: ' + uErr.message);
         if (!userData) throw new Error('Tu usuario no existe en la base de datos. Contacta al pastor.');
 
-        redirectByRole(userData.rol);
+        redirectByRole(userData);
 
     } catch (err) {
         let msg = err.message;

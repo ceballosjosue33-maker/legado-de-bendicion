@@ -31,6 +31,25 @@ async function fetchLMSData() {
     lmsData.lecciones = l || [];
     lmsData.progresoLec = pl || [];
     lmsData.progresoMod = pm || [];
+    
+    // Update summary view in dashboard-miembro.html if it exists
+    updateDashboardSummary();
+}
+
+function updateDashboardSummary() {
+    const totalMods = lmsData.modulos.length;
+    const comps = lmsData.progresoMod.filter(p => p.completado).length;
+    const pct = totalMods > 0 ? Math.round((comps / totalMods) * 100) : 0;
+    
+    const kpiCompleted = document.getElementById('kpi-completed');
+    const kpiTotal = document.getElementById('kpi-total');
+    const coursePercent = document.getElementById('course-percent');
+    const courseFill = document.getElementById('course-fill');
+    
+    if (kpiCompleted) kpiCompleted.textContent = comps;
+    if (kpiTotal) kpiTotal.textContent = totalMods;
+    if (coursePercent) coursePercent.textContent = pct + '%';
+    if (courseFill) courseFill.style.width = pct + '%';
 }
 
 function renderLMSHome() {
