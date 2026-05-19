@@ -8,7 +8,7 @@ let allUsers = [], allModules = [];
 let progressData = [], sortCol = 'nombre', sortAsc = true;
 let charts = {};
 
-// ── GUARDIA DE SEGURIDAD ──────────────────
+// ── GUARDIA DE SEGURIDAD ────────────────
 document.addEventListener('DOMContentLoaded', async () => {
     const { data: { session } } = await _s.auth.getSession();
     if (!session) return window.location.href = 'auth.html';
@@ -27,20 +27,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupNav();
     setupFilters();
     setupModuleModal();
-    setupContentForms();
+    // setupContentForms() eliminado: el CMS ahora usa dashboard-pastor-web.js
     setupTableSort();
 
     document.getElementById('btn-export-pdf').addEventListener('click', exportPDF);
     document.getElementById('btn-logout').addEventListener('click', async () => { await _s.auth.signOut(); window.location.href = 'index.html'; });
 
-    // Realtime
     _s.channel('pastor-rt')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios' }, loadAll)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'progreso_curso' }, loadAll)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'roles_log' }, loadRolesLog)
         .subscribe();
 });
-
 // ── CARGA GENERAL ─────────────────────────
 async function loadAll() {
     const [{ data: users }, { data: mods }] = await Promise.all([
@@ -77,6 +75,7 @@ function setupNav() {
             
             if (target === 'view-stats') Object.values(charts).forEach(c => c?.resize?.());
             if (target === 'view-roles-log') loadRolesLog();
+            if (target === 'view-content' && typeof window.initCMS === 'function') window.initCMS();
             
             // Scroll to top of main content
             const mainContent = document.querySelector('.main-content');

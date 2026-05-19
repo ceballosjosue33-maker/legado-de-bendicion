@@ -1,26 +1,34 @@
 // dashboard-pastor-web.js — REFACTORED
 // Fixes: usa window.sb, preview DOM, tabs funcionales, listas dinámicas
+// NOTA: No declara _s localmente — usa window.sb directamente para evitar
+// conflicto con la const _s de dashboard-pastor.js
 
-const _s = window.sb;
 let usuarioActual = null;
 let currentTab = 'navbar';
 let cmsData = {};
 let listData = { horarios: [], eventos: [], sermones: [] };
+let cmsInitialized = false;
 
-document.addEventListener('DOMContentLoaded', async () => {
+// Expuesto globalmente para que setupNav() en dashboard-pastor.js lo llame
+window.initCMS = async function() {
+  if (cmsInitialized) {
+    // Si ya se inicializó, solo re-renderizar la pestaña activa
+    renderForma(currentTab);
+    renderPreview(currentTab);
+    return;
+  }
+  cmsInitialized = true;
   try {
-    const { data: { session } } = await _s.auth.getSession();
+    const { data: { session } } = await window.sb.auth.getSession();
     if (session) usuarioActual = session.user;
   } catch(e) {}
-  initCMS();
-});
-
-async function initCMS() {
   setupCMSTabs();
   await cargarDatosCMS();
   renderForma(currentTab);
   renderPreview(currentTab);
-}
+};
+
+// initCMS() ha sido reemplazada por window.initCMS() arriba
 
 function setupCMSTabs() {
   const tabs = document.querySelectorAll('.cms-tab');
@@ -47,12 +55,12 @@ function setupCMSTabs() {
 
 async function cargarDatosCMS() {
   try {
-    const { data } = await _s.from('contenido_pagina').select('clave,valor_texto,valor_imagen_url');
+    const { data } = await window.sb.from('contenido_pagina').select('clave,valor_texto,valor_imagen_url');
     if (data) data.forEach(r => { cmsData[r.clave] = r.valor_imagen_url || r.valor_texto || ''; });
   } catch(e) { console.warn('CMS: no se pudieron cargar datos de contenido_pagina', e); }
   try {
     for (const t of ['horarios','eventos','sermones']) {
-      const { data: rows } = await _s.from('cms_' + t).select('*').order('orden', { ascending: true });
+      const { data: rows } = await window.sb.from('cms_' + t).select('*').order('orden', { ascending: true });
       if (rows) listData[t] = rows;
     }
   } catch(e) { console.warn('CMS: tablas de listas no disponibles, usando estado local.', e); }
@@ -228,8 +236,8 @@ async function guardarSeccionCMS(tab, btn) {
       });
       listData[tab] = rows;
       try {
-        await _s.from('cms_' + tab).delete().gte('orden', 0);
-        if (rows.length) await _s.from('cms_' + tab).insert(rows);
+        await window.sb.from('cms_' + tab).delete().gte('orden', 0);
+        if (rows.length) await window.sb.from('cms_' + tab).insert(rows);
       } catch(e) { console.warn('Tabla cms_'+tab+' no existe, guardado local.'); }
     } else {
       document.querySelectorAll('[data-input]').forEach(el => { cmsData[el.dataset.input] = el.value; });
@@ -242,7 +250,7 @@ async function guardarSeccionCMS(tab, btn) {
         }));
       if (filas.length) {
         try {
-          await _s.from('contenido_pagina').upsert(filas, { onConflict: 'clave' });
+          await window.sb.from('contenido_pagina').upsert(filas, { onConflict: 'clave' });
         } catch(e) { console.warn('Error guardando en Supabase:', e); }
       }
     }
