@@ -485,81 +485,43 @@ ul {
 
 /* Schedule Section */
 .schedule {
-    background-color: var(--color-dark-green);
-}
-
-.schedule-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.schedule-card {
-    background-color: var(--bg-main);
-    padding: 3rem 2rem;
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: var(--transition-smooth);
-}
-
-.schedule-card:hover {
-    transform: translateY(-10px);
-    border-color: rgba(201, 168, 76, 0.3);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.schedule-card h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.schedule-card .time {
-    color: var(--color-primary);
-    font-weight: 500;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-}
-
-.schedule-card p {
-    color: var(--text-secondary);
+    background-color: #0A1C10; /* Solid deep forest green */
+    padding: 6rem 0;
 }
 
 /* Schedule Table */
 .schedule-table-wrapper {
     overflow-x: auto;
-    margin-top: 3rem;
-    border-radius: 12px;
-    border: 1px solid rgba(201, 168, 76, 0.18);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    margin-top: 4rem;
+    border-radius: 4px;
+    border: 1px solid rgba(212, 175, 55, 0.2); /* Soft gold tone border */
 }
 
 .schedule-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--bg-main);
+    background-color: transparent;
     font-family: var(--font-body);
 }
 
 .schedule-table thead tr {
-    background: linear-gradient(135deg, rgba(201,168,76,0.18) 0%, rgba(201,168,76,0.08) 100%);
-    border-bottom: 2px solid rgba(201,168,76,0.35);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .schedule-table thead th {
-    padding: 1.2rem 1.8rem;
+    padding: 1.5rem 2rem;
     text-align: left;
-    color: var(--color-primary);
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    font-weight: 700;
+    color: #D4AF37; /* Soft gold tone */
+    font-family: var(--font-heading); /* Serif */
+    font-size: 1rem;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
 }
 
 .schedule-table tbody tr {
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    transition: background 0.25s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.3s ease;
 }
 
 .schedule-table tbody tr:last-child {
@@ -567,78 +529,78 @@ ul {
 }
 
 .schedule-table tbody tr:hover {
-    background-color: rgba(201,168,76,0.06);
+    background-color: rgba(255,255,255,0.03);
 }
 
 .schedule-table tbody td {
-    padding: 1.3rem 1.8rem;
+    padding: 1.8rem 2rem;
     vertical-align: middle;
 }
 
 .schedule-day {
     display: inline-block;
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 1rem;
+    color: #ffffff; /* Crisp white */
+    font-weight: 400;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
 }
 
 .schedule-event {
     display: inline-block;
-    color: var(--text-primary);
-    font-size: 1rem;
-    font-weight: 500;
-    letter-spacing: 0.3px;
+    color: #ffffff; /* Crisp white */
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 1px;
 }
 
 .schedule-time {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    color: var(--color-primary);
-    font-weight: 600;
-    font-size: 0.98rem;
-    font-family: var(--font-heading);
-    background: rgba(201,168,76,0.08);
-    padding: 0.3rem 0.9rem;
-    border-radius: 50px;
-    border: 1px solid rgba(201,168,76,0.2);
+    gap: 0.6rem;
+    color: #ffffff; /* Crisp white */
+    font-weight: 300;
+    font-size: 1.05rem;
+    font-family: var(--font-body); /* Sans-serif */
     white-space: nowrap;
+}
+
+.schedule-time svg {
+    color: #D4AF37; /* Gold icon */
+    opacity: 0.9;
 }
 
 .schedule-sede {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    padding: 0.35rem 1rem;
-    border-radius: 50px;
+    gap: 0.6rem;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #ffffff; /* Crisp white */
     letter-spacing: 0.5px;
     white-space: nowrap;
 }
 
-.sede-norte {
-    background: rgba(60, 120, 220, 0.1);
-    color: #7aaaf7;
-    border: 1px solid rgba(90, 140, 240, 0.25);
+.schedule-sede svg {
+    color: #D4AF37; /* Gold icon */
+    opacity: 0.9;
 }
 
-.sede-campestre {
-    background: rgba(80, 180, 80, 0.1);
-    color: #7ed87e;
-    border: 1px solid rgba(80, 180, 80, 0.25);
+/* Remove colored backgrounds for badges to keep it minimal and elegant */
+.sede-norte, .sede-campestre {
+    background: transparent;
+    border: none;
+    padding: 0;
 }
 
 @media (max-width: 600px) {
     .schedule-table thead th,
     .schedule-table tbody td {
-        padding: 1rem 1rem;
-        font-size: 0.88rem;
+        padding: 1.2rem 1rem;
+        font-size: 0.95rem;
     }
     .schedule-time,
     .schedule-sede {
-        font-size: 0.8rem;
-        padding: 0.25rem 0.7rem;
+        font-size: 0.9rem;
     }
 }
 
