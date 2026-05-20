@@ -484,265 +484,286 @@ ul {
 }
 
 /* =============================================
-   SCHEDULE SECTION — Premium Card Grid
+   ENCUENTROS SECTION — Premium Clickable Card Grid
    ============================================= */
 
-.sched-section {
-    background-color: #0A1C10;
+.ec-section {
+    background: linear-gradient(160deg, #0B1A11 0%, #0a1a0f 50%, #091508 100%);
     padding: 7rem 0 8rem;
     position: relative;
     overflow: hidden;
 }
 
-/* Subtle radial glow behind the section */
-.sched-section::before {
+/* Radial gold glow behind section */
+.ec-section::before {
     content: '';
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
-    background: radial-gradient(ellipse at center, rgba(212,175,55,0.06) 0%, transparent 70%);
+    width: 70%;
+    height: 60%;
+    background: radial-gradient(ellipse at center, rgba(212,175,55,0.07) 0%, transparent 72%);
     pointer-events: none;
+    z-index: 0;
 }
 
-/* Header */
-.sched-header {
-    margin-bottom: 4.5rem;
+/* ── Header ── */
+.ec-header {
+    margin-bottom: 4rem;
+    position: relative;
+    z-index: 1;
 }
 
-.sched-eyebrow {
+.ec-eyebrow {
     display: inline-block;
     color: #D4AF37;
     font-family: var(--font-body);
-    font-size: 0.78rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 4px;
+    letter-spacing: 5px;
     margin-bottom: 1rem;
-    opacity: 0.85;
+    opacity: 0.8;
 }
 
-.sched-title {
+.ec-title {
     font-family: var(--font-heading) !important;
     color: #ffffff !important;
     margin-bottom: 0.8rem;
 }
 
-.sched-subtitle {
-    color: rgba(255,255,255,0.55) !important;
+.ec-subtitle {
+    color: rgba(255,255,255,0.5) !important;
     font-size: 1.05rem;
     margin-bottom: 0 !important;
 }
 
-/* Grid */
-.sched-grid {
+/* ── Grid: 3 columns on desktop ── */
+.ec-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1.2rem;
-    align-items: stretch;
-}
-
-/* Card base — starts hidden for staggered animation */
-.sched-card {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4rem;
     position: relative;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(212,175,55,0.15);
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: default;
-    /* Entrance animation — hidden by default */
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.55s ease, transform 0.55s ease,
-                box-shadow 0.3s ease, border-color 0.3s ease, scale 0.3s ease;
+    z-index: 1;
 }
 
-/* Visible state added by JS */
-.sched-card--visible {
+/* ── Card: full <a> as clickable surface ── */
+.ec-card {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border-radius: 12px;
+    border: 1px solid rgba(212,175,55,0.18);
+    background: linear-gradient(135deg,
+        rgba(255,255,255,0.04) 0%,
+        rgba(212,175,55,0.03) 60%,
+        rgba(0,0,0,0.15) 100%);
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+
+    /* Staggered entrance — hidden by default */
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+        opacity   0.5s ease,
+        transform 0.5s ease,
+        box-shadow   0.3s ease,
+        border-color 0.3s ease;
+}
+
+/* Visible state (added by JS) */
+.ec-card--visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* Hover */
-.sched-card:hover {
-    scale: 1.025;
+/* ── Hover ── */
+.ec-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(212,175,55,0.55);
+    box-shadow:
+        0 16px 48px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(212,175,55,0.14),
+        0 0 30px rgba(212,175,55,0.12);
+}
+
+/* ── Campestre variant ── */
+.ec-card--campestre {
+    border-color: rgba(109,187,109,0.22);
+    background: linear-gradient(135deg,
+        rgba(80,180,80,0.05) 0%,
+        rgba(0,0,0,0.15) 100%);
+}
+
+.ec-card--campestre:hover {
+    border-color: rgba(109,187,109,0.55);
+    box-shadow:
+        0 16px 48px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(109,187,109,0.14),
+        0 0 30px rgba(109,187,109,0.1);
+}
+
+/* ── Today state ── */
+.ec-card--today {
     border-color: rgba(212,175,55,0.45);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.12), inset 0 0 30px rgba(212,175,55,0.04);
+    background: linear-gradient(135deg,
+        rgba(212,175,55,0.08) 0%,
+        rgba(0,0,0,0.12) 100%);
 }
 
-/* Gold left accent bar */
-.sched-card-accent {
-    position: absolute;
-    top: 1.5rem;
-    bottom: 1.5rem;
-    left: 0;
-    width: 3px;
-    background: linear-gradient(to bottom, #D4AF37, rgba(212,175,55,0.2));
-    border-radius: 0 3px 3px 0;
-    transition: opacity 0.3s ease;
-    opacity: 0.6;
-}
-
-.sched-card:hover .sched-card-accent {
-    opacity: 1;
-}
-
-/* Campestre variant — green accent */
-.sched-card--campestre {
-    background: rgba(80,180,80,0.04);
-    border-color: rgba(100,200,100,0.2);
-}
-
-.sched-card--campestre .sched-card-accent {
-    background: linear-gradient(to bottom, #6dbb6d, rgba(109,187,109,0.2));
-}
-
-.sched-card--campestre:hover {
-    border-color: rgba(100,200,100,0.5);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(100,200,100,0.12), inset 0 0 30px rgba(80,180,80,0.05);
-}
-
-/* Today highlight */
-.sched-card--today {
-    background: rgba(212,175,55,0.07);
-    border-color: rgba(212,175,55,0.4);
-}
-
-.sched-card--today .sched-card-accent {
-    opacity: 1;
-}
-
-/* Inner padding */
-.sched-card-inner {
-    padding: 2rem 1.6rem 1.8rem 2rem;
+/* ── LEFT: Day badge column ── */
+.ec-card-left {
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
-    height: 100%;
-}
-
-/* Top row: day label + badges */
-.sched-card-top {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.sched-card-day {
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: #D4AF37;
-    opacity: 0.85;
-}
-
-/* "Hoy" badge */
-.sched-badge-today {
-    font-family: var(--font-body);
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #0A1C10;
-    background: #D4AF37;
-    padding: 0.2rem 0.6rem;
-    border-radius: 50px;
-    white-space: nowrap;
-    animation: pulse-badge 2s ease-in-out infinite;
-}
-
-@keyframes pulse-badge {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.5); }
-    50%       { box-shadow: 0 0 0 6px rgba(212,175,55,0); }
-}
-
-/* Campestre sede badge */
-.sched-badge-sede {
-    font-family: var(--font-body);
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #6dbb6d;
-    border: 1px solid rgba(109,187,109,0.4);
-    padding: 0.2rem 0.6rem;
-    border-radius: 50px;
-    white-space: nowrap;
-}
-
-/* Event name */
-.sched-card-event {
-    font-family: var(--font-heading);
-    font-size: 1.65rem;
-    font-weight: 400;
-    color: #ffffff;
-    line-height: 1.1;
-    margin: 0;
-    letter-spacing: 0.3px;
-}
-
-/* Meta row: time + location */
-.sched-card-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-}
-
-.sched-meta-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    font-weight: 400;
-    color: rgba(255,255,255,0.55);
-    white-space: nowrap;
-}
-
-.sched-meta-item svg {
-    color: #D4AF37;
-    opacity: 0.75;
+    padding: 1.6rem 1.2rem 1.6rem 1.4rem;
+    border-right: 1px solid rgba(212,175,55,0.1);
+    min-width: 88px;
+    background: linear-gradient(to bottom, rgba(212,175,55,0.07), rgba(212,175,55,0.02));
     flex-shrink: 0;
 }
 
-.sched-meta-divider {
-    color: rgba(255,255,255,0.2);
-    font-size: 1rem;
+.ec-card--campestre .ec-card-left {
+    border-right-color: rgba(109,187,109,0.12);
+    background: linear-gradient(to bottom, rgba(109,187,109,0.07), rgba(109,187,109,0.02));
+}
+
+.ec-day-badge {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #D4AF37;
+    text-align: center;
+    line-height: 1.35;
+}
+
+.ec-card--campestre .ec-day-badge {
+    color: #7dcc7d;
+}
+
+/* "Hoy" pulsing badge */
+.ec-badge-today {
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #0B1A11;
+    background: #D4AF37;
+    padding: 0.2rem 0.55rem;
+    border-radius: 50px;
+    white-space: nowrap;
+    margin-top: 0.3rem;
+    animation: ec-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes ec-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.55); }
+    50%       { box-shadow: 0 0 0 7px rgba(212,175,55,0); }
+}
+
+/* ── RIGHT: Event info column ── */
+.ec-card-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.6rem 1.6rem 1.4rem 1.5rem;
+    flex: 1;
+    gap: 1.2rem;
+}
+
+/* Event name */
+.ec-event-name {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: 0.2px;
+    transition: color 0.3s ease;
+}
+
+.ec-card:hover .ec-event-name {
+    color: #f0e0a0;
+}
+
+/* ── Footer: meta row (time + location) ── */
+.ec-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
+.ec-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.ec-card:hover .ec-meta {
+    color: rgba(255,255,255,0.72);
+}
+
+.ec-icon {
+    color: #D4AF37;
+    opacity: 0.7;
+    flex-shrink: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ec-card:hover .ec-icon {
+    opacity: 1;
+}
+
+.ec-card--campestre .ec-icon {
+    color: #7dcc7d;
+}
+
+.ec-meta-sep {
+    color: rgba(255,255,255,0.18);
+    font-size: 0.9rem;
+    user-select: none;
 }
 
 /* ── Responsive ── */
-@media (max-width: 1100px) {
-    .sched-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 720px) {
-    .sched-grid {
+@media (max-width: 960px) {
+    .ec-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-    }
-    .sched-card-event {
-        font-size: 1.4rem;
     }
 }
 
-@media (max-width: 480px) {
-    .sched-section {
+@media (max-width: 580px) {
+    .ec-section {
         padding: 5rem 0 6rem;
     }
-    .sched-grid {
+    .ec-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
-    .sched-header {
-        margin-bottom: 3rem;
+    .ec-header {
+        margin-bottom: 2.5rem;
+    }
+    .ec-card-left {
+        min-width: 76px;
+        padding: 1.3rem 1rem;
+    }
+    .ec-event-name {
+        font-size: 1.3rem;
     }
 }
 
