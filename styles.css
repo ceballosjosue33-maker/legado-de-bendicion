@@ -483,124 +483,266 @@ ul {
     font-weight: 500;
 }
 
-/* Schedule Section */
-.schedule {
-    background-color: #0A1C10; /* Solid deep forest green */
-    padding: 6rem 0;
+/* =============================================
+   SCHEDULE SECTION — Premium Card Grid
+   ============================================= */
+
+.sched-section {
+    background-color: #0A1C10;
+    padding: 7rem 0 8rem;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Schedule Table */
-.schedule-table-wrapper {
-    overflow-x: auto;
-    margin-top: 4rem;
-    border-radius: 4px;
-    border: 1px solid rgba(212, 175, 55, 0.2); /* Soft gold tone border */
+/* Subtle radial glow behind the section */
+.sched-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(ellipse at center, rgba(212,175,55,0.06) 0%, transparent 70%);
+    pointer-events: none;
 }
 
-.schedule-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: transparent;
+/* Header */
+.sched-header {
+    margin-bottom: 4.5rem;
+}
+
+.sched-eyebrow {
+    display: inline-block;
+    color: #D4AF37;
     font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 1rem;
+    opacity: 0.85;
 }
 
-.schedule-table thead tr {
-    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+.sched-title {
+    font-family: var(--font-heading) !important;
+    color: #ffffff !important;
+    margin-bottom: 0.8rem;
 }
 
-.schedule-table thead th {
-    padding: 1.5rem 2rem;
-    text-align: left;
-    color: #D4AF37; /* Soft gold tone */
-    font-family: var(--font-heading); /* Serif */
-    font-size: 1rem;
-    font-weight: 500;
+.sched-subtitle {
+    color: rgba(255,255,255,0.55) !important;
+    font-size: 1.05rem;
+    margin-bottom: 0 !important;
+}
+
+/* Grid */
+.sched-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.2rem;
+    align-items: stretch;
+}
+
+/* Card base — starts hidden for staggered animation */
+.sched-card {
+    position: relative;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: default;
+    /* Entrance animation — hidden by default */
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.55s ease, transform 0.55s ease,
+                box-shadow 0.3s ease, border-color 0.3s ease, scale 0.3s ease;
+}
+
+/* Visible state added by JS */
+.sched-card--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hover */
+.sched-card:hover {
+    scale: 1.025;
+    border-color: rgba(212,175,55,0.45);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.12), inset 0 0 30px rgba(212,175,55,0.04);
+}
+
+/* Gold left accent bar */
+.sched-card-accent {
+    position: absolute;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    left: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #D4AF37, rgba(212,175,55,0.2));
+    border-radius: 0 3px 3px 0;
+    transition: opacity 0.3s ease;
+    opacity: 0.6;
+}
+
+.sched-card:hover .sched-card-accent {
+    opacity: 1;
+}
+
+/* Campestre variant — green accent */
+.sched-card--campestre {
+    background: rgba(80,180,80,0.04);
+    border-color: rgba(100,200,100,0.2);
+}
+
+.sched-card--campestre .sched-card-accent {
+    background: linear-gradient(to bottom, #6dbb6d, rgba(109,187,109,0.2));
+}
+
+.sched-card--campestre:hover {
+    border-color: rgba(100,200,100,0.5);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(100,200,100,0.12), inset 0 0 30px rgba(80,180,80,0.05);
+}
+
+/* Today highlight */
+.sched-card--today {
+    background: rgba(212,175,55,0.07);
+    border-color: rgba(212,175,55,0.4);
+}
+
+.sched-card--today .sched-card-accent {
+    opacity: 1;
+}
+
+/* Inner padding */
+.sched-card-inner {
+    padding: 2rem 1.6rem 1.8rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    height: 100%;
+}
+
+/* Top row: day label + badges */
+.sched-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sched-card-day {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 3px;
+    color: #D4AF37;
+    opacity: 0.85;
 }
 
-.schedule-table tbody tr {
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    transition: background 0.3s ease;
+/* "Hoy" badge */
+.sched-badge-today {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #0A1C10;
+    background: #D4AF37;
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    white-space: nowrap;
+    animation: pulse-badge 2s ease-in-out infinite;
 }
 
-.schedule-table tbody tr:last-child {
-    border-bottom: none;
+@keyframes pulse-badge {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.5); }
+    50%       { box-shadow: 0 0 0 6px rgba(212,175,55,0); }
 }
 
-.schedule-table tbody tr:hover {
-    background-color: rgba(255,255,255,0.03);
+/* Campestre sede badge */
+.sched-badge-sede {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6dbb6d;
+    border: 1px solid rgba(109,187,109,0.4);
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    white-space: nowrap;
 }
 
-.schedule-table tbody td {
-    padding: 1.8rem 2rem;
-    vertical-align: middle;
-}
-
-.schedule-day {
-    display: inline-block;
-    color: #ffffff; /* Crisp white */
+/* Event name */
+.sched-card-event {
+    font-family: var(--font-heading);
+    font-size: 1.65rem;
     font-weight: 400;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
+    color: #ffffff;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: 0.3px;
 }
 
-.schedule-event {
-    display: inline-block;
-    color: #ffffff; /* Crisp white */
-    font-size: 1.1rem;
-    font-weight: 300;
-    letter-spacing: 1px;
-}
-
-.schedule-time {
-    display: inline-flex;
+/* Meta row: time + location */
+.sched-card-meta {
+    display: flex;
     align-items: center;
     gap: 0.6rem;
-    color: #ffffff; /* Crisp white */
-    font-weight: 300;
-    font-size: 1.05rem;
-    font-family: var(--font-body); /* Sans-serif */
+    flex-wrap: wrap;
+}
+
+.sched-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
     white-space: nowrap;
 }
 
-.schedule-time svg {
-    color: #D4AF37; /* Gold icon */
-    opacity: 0.9;
+.sched-meta-item svg {
+    color: #D4AF37;
+    opacity: 0.75;
+    flex-shrink: 0;
 }
 
-.schedule-sede {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
+.sched-meta-divider {
+    color: rgba(255,255,255,0.2);
     font-size: 1rem;
-    font-weight: 300;
-    color: #ffffff; /* Crisp white */
-    letter-spacing: 0.5px;
-    white-space: nowrap;
 }
 
-.schedule-sede svg {
-    color: #D4AF37; /* Gold icon */
-    opacity: 0.9;
-}
-
-/* Remove colored backgrounds for badges to keep it minimal and elegant */
-.sede-norte, .sede-campestre {
-    background: transparent;
-    border: none;
-    padding: 0;
-}
-
-@media (max-width: 600px) {
-    .schedule-table thead th,
-    .schedule-table tbody td {
-        padding: 1.2rem 1rem;
-        font-size: 0.95rem;
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+    .sched-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
-    .schedule-time,
-    .schedule-sede {
-        font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+    .sched-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    .sched-card-event {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .sched-section {
+        padding: 5rem 0 6rem;
+    }
+    .sched-grid {
+        grid-template-columns: 1fr;
+    }
+    .sched-header {
+        margin-bottom: 3rem;
     }
 }
 
