@@ -2071,7 +2071,7 @@
             <div class="ec-grid">
 
                 <!-- Card: Mar &mdash; Vie -->
-                <a href="#contacto" class="ec-card" data-days="2,3,4,5" aria-label="Alborada — Mar &mdash; Vie">
+                <a href="#contacto" class="ec-card" data-days="2,3,4,5" aria-label="Alborada &mdash; Mar &mdash; Vie">
                     <div class="ec-card-left">
                         <span class="ec-day-badge">Mar &mdash; Vie</span>
                     </div>
@@ -2082,11 +2082,12 @@
                             <span class="ec-meta-sep">&middot;</span>
                             <span class="ec-meta"><svg class="ec-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Sede Norte</span>
                         </div>
+                        <span class="ec-btn-details">Ver M&aacute;s Detalles</span>
                     </div>
                 </a>
 
-                <!-- Card: Mi&eacute;rcoles -->
-                <a href="#contacto" class="ec-card" data-days="3" aria-label="Celebraci&oacute;n — Mi&eacute;rcoles">
+                <!-- Card: Mi&eacute;rcoles — ACTIVE -->
+                <a href="#contacto" class="ec-card ec-card--active" data-days="3" aria-label="Celebraci&oacute;n &mdash; Mi&eacute;rcoles">
                     <div class="ec-card-left">
                         <span class="ec-day-badge">Mi&eacute;rcoles</span>
                     </div>
@@ -2097,11 +2098,12 @@
                             <span class="ec-meta-sep">&middot;</span>
                             <span class="ec-meta"><svg class="ec-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Sede Norte</span>
                         </div>
+                        <span class="ec-btn-details">Ver M&aacute;s Detalles</span>
                     </div>
                 </a>
 
                 <!-- Card: S&aacute;bado -->
-                <a href="#contacto" class="ec-card" data-days="6" aria-label="J&oacute;venes — S&aacute;bado">
+                <a href="#contacto" class="ec-card" data-days="6" aria-label="J&oacute;venes &mdash; S&aacute;bado">
                     <div class="ec-card-left">
                         <span class="ec-day-badge">S&aacute;bado</span>
                     </div>
@@ -2112,11 +2114,12 @@
                             <span class="ec-meta-sep">&middot;</span>
                             <span class="ec-meta"><svg class="ec-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Sede Norte</span>
                         </div>
+                        <span class="ec-btn-details">Ver M&aacute;s Detalles</span>
                     </div>
                 </a>
 
                 <!-- Card: Domingo -->
-                <a href="#contacto" class="ec-card" data-days="0" aria-label="Celebraci&oacute;n — Domingo">
+                <a href="#contacto" class="ec-card" data-days="0" aria-label="Celebraci&oacute;n &mdash; Domingo">
                     <div class="ec-card-left">
                         <span class="ec-day-badge">Domingo</span>
                     </div>
@@ -2127,11 +2130,12 @@
                             <span class="ec-meta-sep">&middot;</span>
                             <span class="ec-meta"><svg class="ec-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Sede Norte</span>
                         </div>
+                        <span class="ec-btn-details">Ver M&aacute;s Detalles</span>
                     </div>
                 </a>
 
-                <!-- Card: Domingo -->
-                <a href="#contacto" class="ec-card ec-card--campestre" data-days="0" aria-label="Celebraci&oacute;n — Domingo">
+                <!-- Card: Domingo Campestre -->
+                <a href="#contacto" class="ec-card ec-card--campestre" data-days="0" aria-label="Celebraci&oacute;n &mdash; Domingo Campestre">
                     <div class="ec-card-left">
                         <span class="ec-day-badge">Domingo</span>
                     </div>
@@ -2142,6 +2146,7 @@
                             <span class="ec-meta-sep">&middot;</span>
                             <span class="ec-meta"><svg class="ec-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Sede Campestre</span>
                         </div>
+                        <span class="ec-btn-details">Ver M&aacute;s Detalles</span>
                     </div>
                 </a>
             </div><!-- /ec-grid -->
@@ -2150,10 +2155,18 @@
     </section>
 
     <script>
-    /* Schedule: "Hoy" badge + staggered entrance */
+    /* ── Encuentros: "Hoy" badge + staggered fadeIn + ripple ── */
     (function () {
         var today = new Date().getDay();
-        document.querySelectorAll('.ec-card').forEach(function(card) {
+
+        /* 1. Staggered animation-delay for CSS fadeIn */
+        var cards = document.querySelectorAll('.ec-card');
+        cards.forEach(function(card, idx) {
+            card.style.animationDelay = (idx * 0.12) + 's';
+        });
+
+        /* 2. "Hoy" badge */
+        cards.forEach(function(card) {
             var days = (card.dataset.days || '').split(',').map(Number);
             if (days.indexOf(today) !== -1) {
                 var badge = document.createElement('span');
@@ -2163,19 +2176,34 @@
                 card.classList.add('ec-card--today');
             }
         });
-        var cards = document.querySelectorAll('.ec-card');
-        var io = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    var idx = Array.prototype.indexOf.call(cards, entry.target);
-                    setTimeout(function() {
-                        entry.target.classList.add('ec-card--visible');
-                    }, idx * 100);
-                    io.unobserve(entry.target);
-                }
+
+        /* 3. Ripple on click */
+        cards.forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                /* Remove any lingering ripple */
+                var old = card.querySelector('.ec-ripple');
+                if (old) old.remove();
+
+                var rect = card.getBoundingClientRect();
+                var size = Math.max(rect.width, rect.height) * 1.4;
+                var x = e.clientX - rect.left - size / 2;
+                var y = e.clientY - rect.top  - size / 2;
+
+                var ripple = document.createElement('span');
+                ripple.className = 'ec-ripple';
+                ripple.style.cssText =
+                    'width:' + size + 'px;' +
+                    'height:' + size + 'px;' +
+                    'left:' + x + 'px;' +
+                    'top:' + y + 'px;';
+
+                card.appendChild(ripple);
+
+                ripple.addEventListener('animationend', function() {
+                    ripple.remove();
+                });
             });
-        }, { threshold: 0.1 });
-        cards.forEach(function(c) { io.observe(c); });
+        });
     })();
     </script>
 

@@ -548,6 +548,18 @@ ul {
     z-index: 1;
 }
 
+/* ── FadeIn entrance keyframe ── */
+@keyframes ec-fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* ── Card: full <a> as clickable surface ── */
 .ec-card {
     display: flex;
@@ -564,30 +576,38 @@ ul {
     cursor: pointer;
     position: relative;
 
-    /* Staggered entrance — hidden by default */
+    /* FadeIn entrance — driven by animation-delay set inline via JS */
     opacity: 0;
-    transform: translateY(22px);
-    transition:
-        opacity   0.5s ease,
-        transform 0.5s ease,
-        box-shadow   0.3s ease,
-        border-color 0.3s ease;
-}
+    animation: ec-fadeInUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 
-/* Visible state (added by JS) */
-.ec-card--visible {
-    opacity: 1;
-    transform: translateY(0);
+    transition:
+        transform     0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow    0.35s ease,
+        border-color  0.3s ease;
 }
 
 /* ── Hover ── */
 .ec-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(212,175,55,0.6);
+    box-shadow:
+        0 20px 52px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(212,175,55,0.18),
+        0 0 36px rgba(212,175,55,0.15);
+}
+
+/* Show "Ver Más Detalles" button on hover */
+.ec-card:hover .ec-btn-details {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Active card (Miércoles Celebración) ── */
+.ec-card--active {
     border-color: rgba(212,175,55,0.55);
     box-shadow:
-        0 16px 48px rgba(0,0,0,0.55),
-        0 0 0 1px rgba(212,175,55,0.14),
-        0 0 30px rgba(212,175,55,0.12);
+        0 0 0 1px rgba(212,175,55,0.2),
+        0 0 28px rgba(212,175,55,0.14);
 }
 
 /* ── Campestre variant ── */
@@ -601,9 +621,9 @@ ul {
 .ec-card--campestre:hover {
     border-color: rgba(109,187,109,0.55);
     box-shadow:
-        0 16px 48px rgba(0,0,0,0.55),
+        0 20px 52px rgba(0,0,0,0.6),
         0 0 0 1px rgba(109,187,109,0.14),
-        0 0 30px rgba(109,187,109,0.1);
+        0 0 32px rgba(109,187,109,0.12);
 }
 
 /* ── Today state ── */
@@ -738,6 +758,58 @@ ul {
     color: rgba(255,255,255,0.18);
     font-size: 0.9rem;
     user-select: none;
+}
+
+/* ── "Ver Más Detalles" button (hidden by default, revealed on hover) ── */
+.ec-btn-details {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.42rem 1.05rem;
+    border: 1px solid rgba(212,175,55,0.5);
+    border-radius: 50px;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #D4AF37;
+    background: rgba(212,175,55,0.07);
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+        opacity   0.3s ease,
+        transform 0.3s ease,
+        background 0.2s ease;
+    pointer-events: none; /* card <a> handles the click */
+    align-self: flex-start;
+}
+
+.ec-card--campestre .ec-btn-details {
+    border-color: rgba(109,187,109,0.5);
+    color: #7dcc7d;
+    background: rgba(109,187,109,0.07);
+}
+
+/* ── Ripple effect ── */
+.ec-ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    background: rgba(212,175,55,0.25);
+    animation: ec-ripple-anim 0.65s linear forwards;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes ec-ripple-anim {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.ec-card--campestre .ec-ripple {
+    background: rgba(109,187,109,0.22);
 }
 
 /* ── Responsive ── */
